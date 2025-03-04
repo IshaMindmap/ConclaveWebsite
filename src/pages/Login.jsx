@@ -49,7 +49,6 @@ export const Login = () => {
 
 
   return (
-
     <div className="w-[100%] flex flex-col justify-center items-center h-[85vh]">
       <div className="max-w-[30.972vw]">
         <div className="text-[#111478] font-[700] font-mulish text-[2.222vw] mb-[1.458vw]">

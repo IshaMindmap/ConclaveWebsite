@@ -101,7 +101,6 @@ export const Otp = () => {
   };
 
   return (
-
     <div className="flex flex-col w-[100%] h-[80vh] justify-center items-center">
       <div>
         <div className="text-[#111478] font-[700] font-mulish text-[2.222vw] mb-[1.458vw]">

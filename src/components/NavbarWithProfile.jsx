@@ -6,7 +6,6 @@ const NavbarWithProfile = () => {
     <nav className="flex justify-between items-center fill-available  px-[21px] py-[12px] font-segoe">
       <div className="flex gap-[0.313vw] cursor-pointer">
         <img src={centrixlogo} />
-        <div className="text-[#2B2B2B] text-[2.296vw]">centrix</div>
       </div>
       <div className="flex justify-center items-center">
         <div className="mr-[3.333vw] font-mulish">

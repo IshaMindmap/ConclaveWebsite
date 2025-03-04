@@ -7,10 +7,12 @@ import sendicon from './sendicon.svg';
 import copyicon from './copyicon.svg';
 import centrixwhitelogo from './centrixwhitelogo.svg';
 import centrixsymbol from './centrixsymbol.svg';
+import featuresbg from './featuresbg.svg';
 export {
-    centrixsymbol,
-    centrixwhitelogo,
-  copyicon, 
+  featuresbg,
+  centrixsymbol,
+  centrixwhitelogo,
+  copyicon,
   sendicon,
   minimizeicon,
   centrixlogo,
