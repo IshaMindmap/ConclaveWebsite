@@ -94,44 +94,6 @@ export const Otp = () => {
         </div>
       </div>
     </div>
-    // <div className="flex gap-[0.833vw]">
-    //   <div className="bg-[#19213D] rounded-[1.667vw] p-[0.833vw] w-[34.972vw]">
-    //     <div className="text-[#FFFFFF] font-[800] text-[1.319vw] mb-[1.389vw]">
-    //       Enter OTP
-    //     </div>
-    //     <div className="rounded-[1.111vw] bg-[#FFFFFF] p-[1.528vw]">
-    //       <div className="flex justify-center gap-4 mb-8">
-    //         {otp.map((digit, index) => (
-    //           <input
-    //             key={index}
-    //             ref={inputRefs[index]}
-    //             type="text"
-    //             maxLength="1"
-    //             value={digit}
-    //             onChange={(e) => handleChange(e, index)}
-    //             onKeyDown={(e) => handleKeyDown(e, index)}
-    //             onPaste={index === 0 ? handlePaste : null}
-    //             className="w-20 h-12 text-center text-xl font-bold border-2 border-[#19213D] rounded-[8px] focus:outline-none focus:border-[#19213D] focus:ring-1 focus:ring-[#19213D]"
-    //           />
-    //         ))}
-    //       </div>
-    //       <div className="mb-[1.111vw]">
-    //         {/* <BlueButton text={'SIGN IN'} /> */}
-    //       </div>
-    //       <div className="text-[#424242] font-[600] text-[0.903vw ] flex justify-center items-center">
-    //         Register here, if not
-    //         <span
-    //           className="text-[#02A82B] cursor-pointer"
-    //           onClick={() => {
-    //             navigate('/');
-    //           }}
-    //         >
-    //           &nbsp;Sign up{' '}
-    //         </span>
-    //       </div>
-    //     </div>
-    //   </div>
-    // </div>
   );
 };
 
