@@ -110,21 +110,22 @@ export const Login = () => {
           </div>
         </div>
       </div>
-      <div className="bg-[#015CD3] rounded-[1.667vw] p-[0.833vw] w-[34.972vw]">
+      <div className="bg-[#19213D] rounded-[1.667vw] p-[0.833vw] w-[34.972vw]">
         <div className="text-[#FFFFFF] font-[800] text-[1.319vw] mb-[1.389vw]">
           Sign in
         </div>
         <div className="rounded-[1.111vw] bg-[#FFFFFF] p-[1.528vw]">
           <div className="gap-[0.694vw] flex flex-col mb-[1.111vw]">
-            <InputBox label={'Email'} id={'Name'} placeholder={'Enter Email'} />
             <InputBox
-              label={'Password'}
+              label={'MOBILE NO.'}
               id={'Name'}
-              placeholder={'Enter Password'}
+              placeholder={'Enter Mobile No.'}
             />
           </div>
           <div className="mb-[1.111vw]">
-            <BlueButton text={'SIGN IN'} />
+            <div onClick={()=>{navigate('/otp')}}>
+              <BlueButton text={'SEND OTP'} />
+            </div>
           </div>
           <div className="text-[#424242] font-[600] text-[0.903vw ] flex justify-center items-center">
             Register here, if not

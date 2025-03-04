@@ -11,6 +11,7 @@ import Login from './pages/login';
 import Features from './pages/Features';
 import NavbarWithProfile from './components/NavbarWithProfile';
 import Main from './pages/Main';
+import Otp from './pages/Otp';
 
 // Layout component to handle conditional navbar rendering
 const Layout = () => {
@@ -30,6 +31,7 @@ const Layout = () => {
           <Route path="/features" element={<Features />} />
           <Route path="/main" element={<Main />} />
           <Route path="/dashboard" element={<Main />} />
+          <Route path="/otp" element={<Otp />} />
         </Routes>
       </main>
     </div>
