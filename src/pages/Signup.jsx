@@ -11,7 +11,7 @@ export const Signup = () => {
         <div className="text-[#111478] font-[700] font-mulish text-[2.222vw] mb-[1.458vw]">
           Create an account
         </div>
-        <div className='flex flex-col gap-4'>
+        <div className="flex flex-col gap-4">
           <InputBox label={'NAME'} placeholder={'Enter name'} />
           <InputBox label={'MOBILE NO.'} placeholder={'Enter Mobile No.'} />
           <InputBox label={'EMAIL'} placeholder={'Enter Email'} />
@@ -21,7 +21,13 @@ export const Signup = () => {
           />
         </div>
         <div className="w-[30.972vw] mt-[1.806vw]">
-          <BlueButton text={'SEND OTP'} />
+          <div
+            onClick={() => {
+              navigate('/otp');
+            }}
+          >
+            <BlueButton text={'SEND OTP'} />
+          </div>
         </div>
         <div className="text-[#424242] font-[600] text-[0.903vw ] flex justify-center items-center mt-[1.806vw]">
           Already have an account?

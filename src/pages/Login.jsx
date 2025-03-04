@@ -13,7 +13,9 @@ export const Login = () => {
         </div>
         <InputBox label={'MOBILE NO.'} placeholder={'Enter Mobile No.'} />
         <div className="w-[30.972vw] mt-[1.806vw]">
-          <BlueButton text={'SEND OTP'} />
+          <div onClick={()=>{navigate('/otp')}}>
+            <BlueButton text={'SEND OTP'} />
+          </div>
         </div>
         <div className="text-[#424242] font-[600] text-[0.903vw ] flex justify-center items-center mt-[1.806vw]">
           Register here, if not
