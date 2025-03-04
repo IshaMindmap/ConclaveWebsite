@@ -19,4 +19,12 @@ export const LoginButton = ({ text }) => {
     );
 };
 
-export default { BlueButton, LoginButton };
+export const DashboardButton = ({ text }) => {
+  return (
+    <div className="w-[15.972vw] bg-[#6868684D] flex justify-center items-center rounded-[8px] text-[#FFFFFF] font-mulish font-[700] text-[0.903vw] py-[0.625vw] px-[1vw] cursor-pointer">
+      {text}
+    </div>
+  );
+};
+
+export default { DashboardButton,BlueButton, LoginButton };

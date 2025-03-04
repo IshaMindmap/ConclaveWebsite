@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import InputBox from '../components/InputBox';
-import BlueButton from '../components/Buttons';
+import BlueButton, { DashboardButton } from '../components/Buttons';
 import { useNavigate } from 'react-router-dom';
 import { centrixwhitelogo, searchicon } from '../assets';
 
@@ -12,7 +12,9 @@ export const Dashboard = () => {
         <div></div>
         <img src={centrixwhitelogo} />
       </div>
-      <div></div>
+      <div>
+        <DashboardButton text={"Dashboard"}/>
+      </div>
     </div>
   );
 };
