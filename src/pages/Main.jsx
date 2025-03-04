@@ -160,20 +160,15 @@ const Main = () => {
             </div>
           )}
           {/* Footer links */}
-          <div className="text-[#313131] text-[0.833vw] mt-4 cursor-pointer">
-            Disclaimer <span className="text-[#D9D9D9]">|</span> Privacy Policy
-            <span className="text-[#D9D9D9]">|</span> Terms & Conditions
-          </div>
-          {/* Bottom right rectangle */}
-          <div className="absolute bottom-0 right-0 w-[15vw] h-[10vw] bg-[#F9FBFF] rounded-tl-[1.111vw] rounded-br-[1.111vw] flex items-end justify-center">
-            {/* Inner rectangle */}
-            <div className="w-[13vw] flex-col gap-2 h-[9vw] p-2 flex justify-center items-center mb-0 bg-white rounded-[0.8vw] border-[0.3px] border-[#C6C6C6]">
-              <div className="border border-[#19213D] w-full h-[3.139vw] flex justify-center items-center rounded-[0.833vw] border-[#19213D] bg-[#F7F9FB]">
-                Source Selection
-              </div>
-              <div className="border border-[#19213D] w-full h-[3.139vw] flex justify-center items-center rounded-[0.833vw] border-[#19213D] bg-[#F7F9FB]">
-                Export
-              </div>
+          <div className="flex justify-between">
+            <div className="text-[#313131] text-[0.833vw] mt-2 cursor-pointer">
+              Disclaimer <span className="text-[#D9D9D9]">|</span> Privacy
+              Policy
+              <span className="text-[#D9D9D9]">|</span> Terms & Conditions
+            </div>
+            <div className="text-[#313131] text-[0.556vw] mt-4">
+              For Pubmed, we are only relaying on data from Pubmed and not
+              responsible for accuracy
             </div>
           </div>
         </div>

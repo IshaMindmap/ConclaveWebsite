@@ -3,7 +3,7 @@ import { centrixlogo, profilepic, settings } from '../assets';
 
 const NavbarWithProfile = () => {
   return (
-    <nav className="flex justify-between items-center fill-available  px-[21px] py-[12px] font-segoe">
+    <nav className="flex justify-between items-center fill-available  px-[21px] py-[20px] font-segoe">
       <div className="flex gap-[0.313vw] cursor-pointer">
         <img src={centrixlogo} />
       </div>
