@@ -110,7 +110,7 @@ export const Signup = () => {
           </div>
         </div>
       </div>
-      <div className="bg-[#015CD3] rounded-[1.667vw] p-[0.833vw] w-[34.972vw]">
+      <div className="bg-[#19213D] rounded-[1.667vw] p-[0.833vw] w-[34.972vw]">
         <div className="text-[#FFFFFF] font-[800] text-[1.319vw] mb-[1.389vw]">
           Sign Up
         </div>
@@ -128,23 +128,20 @@ export const Signup = () => {
               id={'Name'}
               placeholder={'Enter Qualification'}
             />
-            <InputBox
-              label={'Password'}
-              id={'Name'}
-              placeholder={'Enter Password'}
-            />
-            <InputBox
-              label={'Re-Enter Password'}
-              id={'Name'}
-              placeholder={'Re-Enter Password'}
-            />
           </div>
           <div className="mb-[1.111vw]">
-            <BlueButton text={'SIGN UP'} />
+            <BlueButton text={'SEND OTP'} />
           </div>
           <div className="text-[#424242] font-[600] text-[0.903vw ] flex justify-center items-center">
             Register here, if not
-            <span className="text-[#02A82B] cursor-pointer" onClick={()=>{navigate('/login')}}>&nbsp;logIn </span>
+            <span
+              className="text-[#02A82B] cursor-pointer"
+              onClick={() => {
+                navigate('/login');
+              }}
+            >
+              &nbsp;Sign in{' '}
+            </span>
           </div>
         </div>
       </div>
