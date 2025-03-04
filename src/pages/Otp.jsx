@@ -1,70 +1,102 @@
 import InputBox from '../components/InputBox';
 import {BlueButton} from '../components/Buttons';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import React, { useState, useRef, useEffect } from 'react';
+import axios from 'axios';
+
 
 export const Otp = () => {
-  const navigate = useNavigate();
-  const [otp, setOtp] = useState(['', '', '', '']);
-  const inputRefs = [useRef(null), useRef(null), useRef(null), useRef(null)];
+    const navigate = useNavigate();
+    const [otp, setOtp] = useState(['', '', '', '']);
+    const mobileNumber = location.state?.mobile_number || sessionStorage.getItem("mobile_number") || '';
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
+    const inputRefs = [useRef(null), useRef(null), useRef(null), useRef(null)];
 
-  // Focus on first input when component mounts
-  useEffect(() => {
-    if (inputRefs[0].current) {
-      inputRefs[0].current.focus();
-    }
-  }, []);
-
-  const handleChange = (e, index) => {
-    const value = e.target.value;
-
-    // Only accept digits
-    if (/^\d*$/.test(value)) {
-      // Create a new OTP array with the updated value
-      const newOtp = [...otp];
-
-      // Take only the last character if more than one is pasted
-      newOtp[index] = value.slice(-1);
-      setOtp(newOtp);
-
-      // If a digit was entered and there's a next input, focus it
-      if (value && index < 3) {
-        inputRefs[index + 1].current.focus();
+    useEffect(() => {
+      if (inputRefs[0].current) {
+        inputRefs[0].current.focus();
       }
-    }
-  };
+    }, []);
 
-  const handleKeyDown = (e, index) => {
-    // On backspace, if input is empty and there's a previous input, focus it
-    if (e.key === 'Backspace' && !otp[index] && index > 0) {
-      inputRefs[index - 1].current.focus();
-    }
-  };
+    const handleChange = (e, index) => {
+      const value = e.target.value;
 
-  const handlePaste = (e) => {
-    e.preventDefault();
-    const pastedData = e.clipboardData.getData('text');
+      // Only accept digits
+      if (/^\d*$/.test(value)) {
+        // Create a new OTP array with the updated value
+        const newOtp = [...otp];
 
-    // Check if pasted content contains only digits
-    if (/^\d+$/.test(pastedData)) {
-      // Take only the first 4 digits
-      const digits = pastedData.slice(0, 4).split('');
+        // Take only the last character if more than one is pasted
+        newOtp[index] = value.slice(-1);
+        setOtp(newOtp);
 
-      // Fill the OTP array
-      const newOtp = [...otp];
-      digits.forEach((digit, index) => {
-        if (index < 4) {
-          newOtp[index] = digit;
+        // If a digit was entered and there's a next input, focus it
+        if (value && index < 3) {
+          inputRefs[index + 1].current.focus();
         }
+      }
+    };
+
+   const handleKeyDown = (e, index) => {
+     if (e.key === 'Backspace' && !otp[index] && index > 0) {
+       inputRefs[index - 1].current.focus();
+     }
+   };
+
+   const handlePaste = (e) => {
+     e.preventDefault();
+     const pastedData = e.clipboardData.getData('text');
+
+     if (/^\d+$/.test(pastedData)) {
+       const digits = pastedData.slice(0, 4).split('');
+       const newOtp = [...otp];
+       digits.forEach((digit, index) => {
+         if (index < 4) {
+           newOtp[index] = digit;
+         }
+       });
+
+       setOtp(newOtp);
+       const lastIndex = Math.min(digits.length, 4) - 1;
+       if (lastIndex >= 0 && lastIndex < 4) {
+         inputRefs[lastIndex].current.focus();
+       }
+     }
+   };
+
+
+  const handleVerifyOTP = async () => {
+    setError('');
+    setSuccess('');
+
+    const enteredOTP = otp.join('');
+
+    if (enteredOTP.length !== 4) {
+      setError('Please enter a 4-digit OTP');
+      return;
+    }
+
+    try {
+      const backendUrl = import.meta.env.VITE_API_URL;
+      const response = await axios.post(`${backendUrl}api/v1/auth/userverify/`, {
+        mobile_number: mobileNumber,
+        otp: enteredOTP,
       });
 
-      setOtp(newOtp);
+      if (response.status === 200) {
+        setSuccess('OTP verified successfully! Redirecting...');
+        const { access, refresh } = response.data.token;
 
-      // Focus on the last input or the next empty input
-      const lastIndex = Math.min(digits.length, 4) - 1;
-      if (lastIndex >= 0 && lastIndex < 4) {
-        inputRefs[lastIndex].current.focus();
+        // ✅ Store tokens in local storage
+        localStorage.setItem("access_token", access);
+        localStorage.setItem("refresh_token", refresh);
+
+        setTimeout(() => navigate('/features'), 2000); // Redirect after 2 sec
       }
+    } catch (err) {
+      console.log("Error Response:", err.response?.data);
+      setError(err.response?.data?.message || "Invalid OTP. Try again.");
     }
   };
 
@@ -89,8 +121,12 @@ export const Otp = () => {
             />
           ))}
         </div>
-        <div onClick={()=>{navigate('/features')}}>
-          <BlueButton text={'CONTINUE'} />
+          {/* Show error/success messages */}
+          {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
+          {success && <p className="text-green text-sm mb-2">{success}</p>}
+
+        <div >
+          <BlueButton text={'CONTINUE'}  onClick={handleVerifyOTP} />
         </div>
       </div>
     </div>
