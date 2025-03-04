@@ -42,7 +42,7 @@ export const Signup = () => {
           localStorage.setItem("refresh_token", refresh);
           setSuccess("Signup successful! Redirecting.....")
           
-          setTimeout(() => navigate("/dashboard"), 2000); // Redirect after 2 sec
+          setTimeout(() => navigate("/features"), 2000); // Redirect after 2 sec
         }
     } catch (err) {
         console.log(err)
@@ -91,7 +91,7 @@ export const Signup = () => {
              onChange={handleChange}
           />
            {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
-           {success && <p className="text-green-500 text-sm mb-2">{success}</p>}
+           {success && <p className="text-green text-sm mb-2">{success}</p>}
         </div>
         <div className="w-[30.972vw] mt-[1.806vw]">
           <div
@@ -105,7 +105,7 @@ export const Signup = () => {
           <span
             className="text-[#02A82B] cursor-pointer"
             onClick={() => {
-              navigate('/signup');
+              navigate('/login');
             }}
           >
             &nbsp;Login{' '}
