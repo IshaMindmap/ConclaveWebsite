@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState } from 'react';
 import InputBox from '../components/InputBox';
 import BlueButton from '../components/Buttons';
 import { useNavigate } from 'react-router-dom';
 import { copyicon, minimizeicon, sendicon } from '../assets';
+import axios from "axios";
 
 const Main = () => {
   const navigate = useNavigate();
@@ -31,6 +32,8 @@ const Main = () => {
       setShowInputAtBottom(true);
     }
   };
+
+
 
   return (
     <div className="flex gap-[0.833vw]">
