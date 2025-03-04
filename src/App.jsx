@@ -13,15 +13,17 @@ import Features from './pages/Features';
 import Main from './pages/Main';
 import Otp from './pages/Otp';
 import LandingScreen from './pages/LandingScreen';
+import Dashboard from './pages/Dashboard';
 
 // Layout component to handle conditional navbar rendering
 const Layout = ({ children }) => {
   const location = useLocation();
 
   const isLandingPage = location.pathname === '/';
-  const isFeaturesPage = location.pathname === '/features';
+  const isFeaturesPage =
+    location.pathname === '/features' || location.pathname === '/dashboard'; ;
   const isProfilePage =
-    location.pathname === '/main' || location.pathname === '/dashboard';
+    location.pathname === '/main';
 
   return (
     <>
@@ -45,6 +47,7 @@ function App() {
           <Route path="/features" element={<Features />} />
           <Route path="/main" element={<Main />} />
           <Route path="/otp" element={<Otp />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           {/* Add other routes as needed */}
         </Routes>
       </Layout>
