@@ -1,4 +1,6 @@
 import React, {useEffect, useState ,useRef} from 'react';
+import { marked } from "marked";
+import DOMPurify from "dompurify";
 import InputBox from '../components/InputBox';
 import BlueButton from '../components/Buttons';
 import { useNavigate } from 'react-router-dom';
@@ -20,6 +22,32 @@ const Main = () => {
   const category = String(localStorage.getItem("category")).toUpperCase()
   const backendUrl = import.meta.env.VITE_API_URL;
   const socketUrl = import.meta.env.VITE_API_SOCKET_URL;
+  const renderer = new marked.Renderer();
+
+
+  // ===== CONVERT MARKDOWN TO HTML =====
+  
+  renderer.link = (href, title, text) => {
+    console.log("href:", href, "title:", title, "text:", text);
+  
+    const safeHref = typeof href === "object" ? href.href : href;
+    const safeTitle = title ? ` title="${title}"` : ""; 
+    const safeText = text || safeHref; 
+    return `<a href="${safeHref}"${safeTitle} target="_blank" rel="noopener noreferrer">${safeText}</a>`;
+
+  };
+  marked.setOptions({
+    breaks: true,  // ✅ Enables line breaks
+    gfm: true,  // ✅ Enables GitHub Flavored Markdown
+    headerIds: true, // ✅ Disables automatic header IDs
+    langPrefix: "language-", // ✅ Helps with syntax highlighting
+    renderer: renderer,  // ✅ Use custom renderer
+  });
+
+  const renderMessage = (text) => {
+    if (!text) return { __html: "" };  // ✅ Prevent errors with empty input
+    return { __html: marked.parse(text) };  // ✅ Returns correct format for React
+  };
 
   
   // ========= GET AND CREATE ACTIVE SESSION ========
@@ -28,7 +56,7 @@ const Main = () => {
       try {
         const response = await axios.post(
           `${backendUrl}api/v1/docs/get-or-create-session/`,
-          { category: "cardiology" },
+          { category: String(category).toLowerCase() },
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -73,7 +101,6 @@ const Main = () => {
             }))
         );
     
-        console.log("Fetched Chat History:", chatHistory);
     
         // ✅ Prevent duplicate messages by checking previous state
         setMessages((prevMessages) => {
@@ -234,7 +261,7 @@ const Main = () => {
         <div className="rounded-[1.111vw] font-mulish text-[1.111vw] text-[#313131] capitalize bg-[#FFFFFF] p-2 relative">
           <div 
           ref={messagesEndRef}
-          className='h-[54vh] overflow-y-scroll  px-2 rounded-2xl hide-scroll-bar inset-shadow-xs bg-[#f3f3f3]'
+          className='chats-list h-[54vh] overflow-y-scroll  px-2 rounded-2xl hide-scroll-bar inset-shadow-xs bg-[#f3f3f3]'
           >
               {/* Messages from user (if any) */}
               {messages.length > 0 && (
@@ -248,7 +275,7 @@ const Main = () => {
                             : 'bg-[#fff] text-[#19213D] drop-shadow-sm border-l-4 border-[#19213D] w-fit max-w-screen-sm text-[1rem] p-3'
                         }`}
                       >
-                        {msg.text}
+                        <div dangerouslySetInnerHTML={renderMessage(msg.text)} /> 
                       </div>
                     </div>
                   ))}
@@ -257,8 +284,8 @@ const Main = () => {
 
               {/* Real-time typing effect */}
               {currentAssistantMessage && (
-                <div className="mt-2 p-2 bg-gray-200 text-gray-700 rounded-lg italic">
-                  {currentAssistantMessage}
+                <div className="rounded-lg bg-[#fff] text-[#19213D] drop-shadow-sm border-l-4 border-[#19213D] w-fit max-w-screen-sm text-[1rem] p-3">
+                  <div dangerouslySetInnerHTML={renderMessage(currentAssistantMessage)} /> 
                 </div>
               )}
             
