@@ -35,14 +35,12 @@ export const Signup = () => {
         const backendUrl = import.meta.env.VITE_API_URL;
         const response = await axios.post(`${backendUrl}api/v1/auth/register/`, formData);
 
-        if (response.status === 201) {
-          const { access, refresh } = response.data.token;
-           
-          localStorage.setItem("access_token", access);
-          localStorage.setItem("refresh_token", refresh);
+        if (response.status === 200) {   
           setSuccess("Signup successful! Redirecting.....")
-          
-          setTimeout(() => navigate("/features"), 2000); // Redirect after 2 sec
+          setTimeout(() => {
+            sessionStorage.setItem("mobile_number",formData.mobile_number)
+            navigate("/otp", { state: { mobile_number: formData.mobile_number } });
+          }, 2000);
         }
     } catch (err) {
         console.log(err)
