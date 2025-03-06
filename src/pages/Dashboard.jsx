@@ -12,10 +12,14 @@ import { useNavigate } from 'react-router-dom';
 import {
   calander,
   centrixwhitelogo,
+  deleteicon,
+  downloadicon,
+  filtericon,
   profile,
   search,
   searchicon,
   settingsicon,
+  viewicon,
 } from '../assets';
 import Cards from '../components/Cards';
 
@@ -47,13 +51,6 @@ export const Dashboard = () => {
       name: 'Qwerty.jpg',
       date: 'Mar 31, Fri 10:00:00',
       uploadedBy: 'Raj Verma',
-      docType: 'Pdf',
-      fileFormat: '07:00:00',
-    },
-    {
-      name: 'Qwerty.jpg',
-      date: 'Mar 31, Fri 10:00:00',
-      uploadedBy: 'Manish Verma',
       docType: 'Pdf',
       fileFormat: '07:00:00',
     },
@@ -110,46 +107,38 @@ export const Dashboard = () => {
           main={'Recent Activities'}
         />
       </div>
-      <div className="font-mulish font-[600] text-[1.111vw] w-[46.597vw] bg-white rounded-[1.667vw] p-4">
+      <div className="font-mulish font-[600] w-[46.597vw] bg-white rounded-[1.667vw]">
         <div className="flex justify-between items-center mb-4">
-          <h1 className="text-lg font-medium">
+          <h1 className="font- mulish p-4 text-lg font-[600] text-[1.111vw]">
             List of Newly Uploaded Documents
           </h1>
           <div className="relative">
-            <div className="flex items-center border rounded">
-              <span className="px-3 py-1 text-sm">Short By</span>
+            <div className="flex items-center border border-[#B9B9B9] rounded mr-4">
+              <img src={filtericon} className="ml-2" />
+              <span className="px-3 py-1 text-sm"> Sort By</span>
               <ChevronRight className="w-4 h-4" />
             </div>
           </div>
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse">
+          <table className="w-full border-collapse text-[0.833vw]">
             <thead>
-              <tr className="border-b">
-                <th className="py-2 px-4 text-left font-medium text-gray-600">
-                  Doc. Name
-                </th>
-                <th className="py-2 px-4 text-left font-medium text-gray-600">
-                  Date & Time
-                </th>
-                <th className="py-2 px-4 text-left font-medium text-gray-600">
-                  Uploaded By
-                </th>
-                <th className="py-2 px-4 text-left font-medium text-gray-600">
-                  Doc.Type
-                </th>
-                <th className="py-2 px-4 text-left font-medium text-gray-600">
-                  File Format
-                </th>
-                <th className="py-2 px-4 text-left font-medium text-gray-600">
-                  Download
-                </th>
+              <tr className="border text-[#073365] font-[500] border-[#B9B9B9]">
+                <th className="py-2 px-4 text-left">Doc. Name</th>
+                <th className="py-2 px-4 text-left">Date & Time</th>
+                <th className="py-2 px-4 text-left">Uploaded By</th>
+                <th className="py-2 px-4 text-left">Doc.Type</th>
+                <th className="py-2 px-4 text-left">File Format</th>
+                <th className="py-2 px-4 text-left">Download</th>
               </tr>
             </thead>
             <tbody>
               {documents.map((doc, index) => (
-                <tr key={index} className="border-b hover:bg-gray-50">
+                <tr
+                  key={index}
+                  className="font-[400] text-[#585858] border-b hover:bg-gray-50"
+                >
                   <td className="py-3 px-4 text-sm">{doc.name}</td>
                   <td className="py-3 px-4 text-sm">{doc.date}</td>
                   <td className="py-3 px-4 text-sm">{doc.uploadedBy}</td>
@@ -157,15 +146,9 @@ export const Dashboard = () => {
                   <td className="py-3 px-4 text-sm">{doc.fileFormat}</td>
                   <td className="py-3 px-4">
                     <div className="flex space-x-2">
-                      <button className="p-1 bg-blue-500 text-white rounded">
-                        <Eye className="w-4 h-4" />
-                      </button>
-                      <button className="p-1 bg-green-500 text-white rounded">
-                        <Download className="w-4 h-4" />
-                      </button>
-                      <button className="p-1 bg-orange-500 text-white rounded">
-                        <FileText className="w-4 h-4" />
-                      </button>
+                        <img src={viewicon} />
+                        <img src={downloadicon} />
+                        <img src={deleteicon} />
                     </div>
                   </td>
                 </tr>
