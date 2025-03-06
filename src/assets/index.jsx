@@ -18,10 +18,12 @@ import filtericon from './filtericon.svg';
 import viewicon from './viewicon.svg';
 import downloadicon from './downloadicon.svg';
 import deleteicon from './deleteicon.svg';
+import userIcon from './userIcon.jpg'
 
 
 export {
   viewicon,
+  userIcon,
   downloadicon,
   deleteicon,
   filtericon,

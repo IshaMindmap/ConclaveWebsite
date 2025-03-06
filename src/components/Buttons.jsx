@@ -21,10 +21,12 @@ export const LoginButton = ({ text }) => {
 
 export const DashboardButton = ({ text }) => {
   return (
-    <div className="w-[12.972vw] bg-[#6868684D] flex justify-center items-center rounded-[8px] text-[#FFFFFF] font-mulish font-[700] text-[0.903vw] py-[0.625vw] cursor-pointer">
+    <div className="w-[8rem] bg-[#6868684D] flex justify-center items-center rounded-[8px] text-[#FFFFFF] font-mulish font-[700] text-[0.903vw] py-[0.625vw] cursor-pointer">
       {text}
     </div>
   );
 };
+
+
 
 export default { DashboardButton,BlueButton, LoginButton };
