@@ -17,6 +17,7 @@ const Main = () => {
   const messagesEndRef = useRef(null);
   const [sessionUid, setSessionUid] = useState(null);
   const [socket, setSocket] = useState(null);
+  const [recentSessions, setRecentSessions] = useState([]); 
 
   const accessToken = localStorage.getItem("access_token")
   const category = String(localStorage.getItem("category")).toUpperCase()
@@ -47,6 +48,14 @@ const Main = () => {
   const renderMessage = (text) => {
     if (!text) return { __html: "" };  // ✅ Prevent errors with empty input
     return { __html: marked.parse(text) };  // ✅ Returns correct format for React
+  };
+
+  const handleSessionClick = (uid) => {
+    setMessages([]);
+    setSessionUid(uid);  
+    localStorage.setItem('session_uid', uid);
+    setSocket(new WebSocket(`${socketUrl}ws/chat/${uid}/?token=${accessToken}`)); 
+    
   };
 
   
@@ -127,17 +136,27 @@ const Main = () => {
   // =======   WEBSOCKET CONFIGURATION  ========
   useEffect(() => {
     if (!sessionUid) return; 
-
+  
+    let isConnected = false; // Track WebSocket connection status
+    let reconnectTimeout = null; // Store reconnection timeout
+    
+    // Close existing WebSocket before creating a new one
+    if (socket) {
+      socket.close();
+    }
+  
     const ws = new WebSocket(`${socketUrl}ws/chat/${sessionUid}/?token=${accessToken}`);
-    setSocket(ws);
-
+    
     ws.onopen = () => {
-      console.log("✅ WebSocket Connected");
+      console.log("✅ WebSocket Connected to session:", sessionUid);
+      isConnected = true;
+      setSocket(ws); 
     };
-
+  
     ws.onmessage = (event) => {
       console.log("📩 Received Message:", event.data);
       const receivedMessage = JSON.parse(event.data);
+  
       if (receivedMessage.status === "start") {
         currentMessageRef.current = receivedMessage.assistant; 
         setCurrentAssistantMessage(currentMessageRef.current);
@@ -145,7 +164,6 @@ const Main = () => {
         currentMessageRef.current += receivedMessage.assistant; 
         setCurrentAssistantMessage(currentMessageRef.current);
       } else if (receivedMessage.status === "end") {
-        
         setMessages((prev) => [
           ...prev,
           { text: currentMessageRef.current + receivedMessage.assistant, isUser: false },
@@ -153,21 +171,30 @@ const Main = () => {
         setCurrentAssistantMessage(''); 
       }
     };
-
+  
     ws.onerror = (error) => {
       console.error("WebSocket Error:", error);
     };
-
+  
     ws.onclose = () => {
-      console.log("WebSocket Disconnected, Attempting Reconnection...");
-      setTimeout(() => {
+      console.log("❌ WebSocket Disconnected.");
+      
+      if (!isConnected) return; 
+  
+      // Attempt to reconnect after 5 seconds
+      reconnectTimeout = setTimeout(() => {
+        console.log("♻️ Attempting WebSocket Reconnection...");
         setSocket(new WebSocket(`${socketUrl}ws/chat/${sessionUid}/?token=${accessToken}`));
-      }, 5000); 
+      }, 5000);
     };
-
+  
     return () => {
-      ws.close();
+      console.log("🛑 Cleaning up WebSocket for session:", sessionUid);
+      isConnected = false; 
+      ws.close(); 
+      if (reconnectTimeout) clearTimeout(reconnectTimeout);
     };
+  
   }, [sessionUid]); 
 
   // =======   MESSAGE HANDLING  ========
@@ -208,17 +235,134 @@ const Main = () => {
 
 
 
+  // ======== RECENT ACTIVITIES LIST ========
+  useEffect(() => {
+    const fetchRecentActivity = async () => {
+      try {
+        const response = await axios.get(
+          `${backendUrl}api/v1/docs/category/sessions/${String(category).toLowerCase()}/`, 
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        
+        setRecentSessions(response.data);
+      } catch (error) {
+        console.error("Error fetching recent activity:", error);
+      }
+    };
+
+    fetchRecentActivity();
+  }, [sessionUid]);
+
+
+  // ========== NEW CHAT ==========
+  const handleNewChat = async () => {
+    try {
+      const response = await axios.post(
+        `${backendUrl}api/v1/docs/sessions/`,
+        {
+          category: String(category).toLowerCase(),
+          title: `New Chat of ${category}`, 
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+  
+      if (response.data.status) {
+        const newSessionUid = response.data.active_session_uid;
+        setMessages([]);
+        if (socket) {
+          socket.close(); 
+        } 
+        setSessionUid(newSessionUid);
+        localStorage.setItem("session_uid", newSessionUid);
+      }
+    } catch (error) {
+      console.error("Error creating new session:", error);
+    }
+  };
+
+
+
+  // =========== CLEAR ALL CHATS ========
+  const handleClearChat = async () => {
+    if (!sessionUid) return;  
+  
+    try {
+      const response = await axios.delete(
+        `${backendUrl}api/v1/chat/chat-history/${sessionUid}/`,  
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+  
+      if (response.status === 200) {
+        console.log("✅ Chat history cleared");
+        setMessages([]); 
+      }
+    } catch (error) {
+      console.error("❌ Error clearing chat history:", error);
+    }
+  };
+  
+  
+
+
+
   return (
     <div className="flex gap-[0.833vw]">
       <div className="h-[85vh] ms-4 w-[20%] border-[0.3px] border-[#C6C6C6] bg-[#FFFFFF] pt-[2.222vw] p-[1.528vw] font-mulish rounded-[24px]">
-        <div className="text-[#111478] text-[1.319vw] font-[700] mb-[1.111vw] flex gap-2">
-          Here is some prompts for you <img src={minimizeicon} />
+        <div className="">
+            <h3 className='flex text-[#111478] text-[1.319vw] font-[700] mb-[1.111vw]'><span>Here is some prompts for you</span> <img src={minimizeicon} /></h3>
+            <div className=" mb-5 min-h-[180px] max-h-[200px] overflow-y-scroll hide-scroll-bar">
+                <p className="text-[#111478] text-[1rem] mb-3">Here is some prompts for you.....</p>
+                <p className="text-[#111478] text-[1rem] mb-3">Here is some prompts for you.....</p>
+                <p className="text-[#111478] text-[1rem] mb-3">Here is some prompts for you.....</p>
+                <p className="text-[#111478] text-[1rem] mb-3">Here is some prompts for you.....</p>
+                <p className="text-[#111478] text-[1rem] mb-3">Here is some prompts for you.....</p>
+                <p className="text-[#111478] text-[1rem] mb-3">Here is some prompts for you.....</p>
+                <p className="text-[#111478] text-[1rem] mb-3">Here is some prompts for you.....</p>
+                <p className="text-[#111478] text-[1rem] mb-3">Here is some prompts for you.....</p>
+                <p className="text-[#111478] text-[1rem] mb-3">Here is some prompts for you.....</p>
+                <p className="text-[#111478] text-[1rem] mb-3">Here is some prompts for you.....</p>
+                <p className="text-[#111478] text-[1rem] mb-3">Here is some prompts for you.....</p>
+          </div>
         </div>
+       
         <div className="text-[#111478] text-[1.319vw] font-[700] mb-[1.111vw] flex gap-2">
-          Recent uploads and activity
+          Recent uploads and activity 
         </div>
-        <div className="rounded-[1.111vw] bg-[#F7F9FB] text-center p-4">
-          ...
+        <div className="min-h-[180px] max-h-[200px] overflow-y-scroll hide-scroll-bar">
+          {recentSessions?.info && recentSessions.info.length > 0 ? (
+            recentSessions.info.map((session, index) => (
+              <p 
+              key={index}
+              onClick={() => handleSessionClick(session.uid)}
+              className={`text-[#111478] text-[1rem] mb-3 cursor-pointer ${sessionUid==session.uid?'font-[700]':''}`}
+              >
+                {session.title || "Untitled Session"}
+              </p>
+              
+            ))
+          ) : (
+            <div className="bg-[#F7F9FB] text-center p-5 rounded-lg flex flex-row align-middle justify-center">
+              <div className='w-[4px] h-[4px] bg-[#111478] me-1 rounded-lg'></div>
+              <div className='w-[4px] h-[4px] bg-[#111478] me-1 rounded-lg'></div>
+              <div className='w-[4px] h-[4px] bg-[#111478] me-1 rounded-lg'></div>   
+            </div>
+          )}
+
         </div>
       </div>
       <div className="bg-[#19213D] rounded-[1.667vw] p-[0.833vw] w-[80%] me-4">
@@ -227,10 +371,16 @@ const Main = () => {
             Welcome to the world of {category}
           </div>
           <div className="flex gap-2">
-            <div className="text-[#313131] bg-white px-4 py-2 w-[7.708vw] rounded-[2.083vw]">
+            <div 
+            onClick={handleClearChat}
+            className="text-[#313131] bg-white px-4 py-2 w-[7.708vw] rounded-[2.083vw] cursor-pointer"
+            >
               Clear Chat
             </div>
-            <div className="text-[#313131] bg-white px-4 py-2 w-[7.708vw] rounded-[2.083vw]">
+            <div 
+            onClick={handleNewChat}
+            className="text-[#313131] bg-white px-4 py-2 w-[7.708vw] rounded-[2.083vw] cursor-pointer"
+            >
               New Chat
             </div>
           </div>
