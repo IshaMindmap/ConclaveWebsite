@@ -24,17 +24,40 @@ export const Dashboard = () => {
             <img src={settingsicon} />
           </div>
         </div>
-        <div className='flex justify-between'>
+        <div className="flex justify-between">
           <div className="font-[700] text-white text-[2vw]">
             Good morning, Alex!
           </div>
-          <div className='text-white flex justify-center items-center gap-2'>
-            <img src={calander} className='w-6' /> January 9, 2024
+          <div className="text-white flex justify-center items-center gap-2">
+            <img src={calander} className="w-6" /> January 9, 2024
           </div>
         </div>
       </div>
-      <div className='mt-4'>
-        <Cards />
+      <div className="mt-4 flex gap-4">
+        <Cards
+          head={' Total Users'}
+          users={'150'}
+          increase={'+200'}
+          main={'Recent Activities'}
+        />
+        <Cards
+          head={' Active Users'}
+          users={'150'}
+          increase={'+200'}
+          main={'Recent Activities'}
+        />
+        <Cards
+          head={' Total Documents'}
+          users={'150'}
+          increase={'+200'}
+          main={'Recent Activities'}
+        />
+        <Cards
+          head={' Ai processing time'}
+          users={'150'}
+          increase={'+200'}
+          main={'Recent Activities'}
+        />
       </div>
     </div>
   );
