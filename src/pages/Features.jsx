@@ -8,6 +8,17 @@ export const Features = () => {
   const specialties = ['Cardiology', 'Diabetology', 'Respiratory'];
   const colors = ['#BE1E23', '#233165', '#0F878C'];
 
+  const handleCategory= (index) =>{
+  
+    if(specialties[index]){
+      let category = specialties[index]
+      category= String(category).toLowerCase()
+      localStorage.setItem("category", category);
+      navigate('/main')
+    }
+  }
+
+
   return (
     <div className="relative min-h-screen font-mulish">
       {/* Blurred background */}
@@ -41,7 +52,7 @@ export const Features = () => {
                     key={index}
                     className={`p-[0.486vw] py-[1.3vw] text-center rounded-[1.111vw] font-[600] text-[1.319vw] text-white w-full cursor-pointer`}
                     style={{ backgroundColor: colors[index % colors.length] }}
-                    onClick={() => setSelected(index)}
+                    onClick={() => handleCategory(index)}
                   >
                     {specialty}
                   </div>

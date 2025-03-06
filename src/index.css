@@ -2,3 +2,40 @@
 @tailwind components;
 @tailwind utilities;
 
+
+.hide-scroll-bar::-webkit-scrollbar {
+    display: none;
+}
+
+.hide-scroll-bar{
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.chats-list h1 {
+    font-size: 2rem; /* Adjust as needed */
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .chats-list h2 {
+    font-size: 1.75rem;
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+  
+  .chats-list h3 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 6px;
+  }
+  
+  .chats-list h4, .chats-list h5, .chats-list h6 {
+    font-weight: bold;
+  }
+  
+
+  .chats-list a{
+    font-weight: bold;
+  }
+

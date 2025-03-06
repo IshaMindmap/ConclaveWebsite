@@ -33,6 +33,7 @@ export const Login = () => {
       if (response.status === 200) {
         setSuccess("OTP sent successfully!");
         setTimeout(() => {
+          sessionStorage.setItem("mobile_number",mobileNumber)
           navigate("/otp", { state: { mobile_number: mobileNumber } });
         }, 2000); 
       }
