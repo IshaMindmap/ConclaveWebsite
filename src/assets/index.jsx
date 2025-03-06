@@ -14,8 +14,17 @@ import settingsicon from './settingsicon.svg';
 import calander from './calander.svg';
 import calandercard from './calandercard.svg';
 import dropdown from './dropdown.svg';
+import filtericon from './filtericon.svg';
+import viewicon from './viewicon.svg';
+import downloadicon from './downloadicon.svg';
+import deleteicon from './deleteicon.svg';
+
 
 export {
+  viewicon,
+  downloadicon,
+  deleteicon,
+  filtericon,
   dropdown,
   calandercard,
   calander,
