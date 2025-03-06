@@ -4,7 +4,7 @@ import { calandercard, dropdown } from "../assets";
 const Cards = ({ head, users, increase, main }) => {
   return (
     <div className="p-4 bg-white rounded-[1.667vw] max-w-[16.528vw]">
-      <div className="flex justify-left items-center font-[700] gap-2 text-[1.25vw] mb-[3.264vw]">
+      <div className="flex justify-left items-center font-[700] gap-2 text-[1.25vw] mb-[0.8vw]">
         <img src={calandercard} />
         {head}
       </div>

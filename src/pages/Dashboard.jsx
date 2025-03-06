@@ -58,7 +58,7 @@ export const Dashboard = () => {
   return (
     <div className="bg-[#111478] p-4 font-mulish">
       <div className="border border-[#C6C6C6] rounded-[1.667vw] border-[0.3px] p-4 ">
-        <div className="flex justify-between mb-20">
+        <div className="flex justify-between mb-12">
           <img src={centrixwhitelogo} />
           <div className="flex gap-2">
             <DashboardButton text={'Dashboard'} />
@@ -108,7 +108,7 @@ export const Dashboard = () => {
         />
       </div>
       <div className="font-mulish font-[600] w-[46.597vw] bg-white rounded-[1.667vw]">
-        <div className="flex justify-between items-center mb-4">
+        <div className="flex justify-between items-center">
           <h1 className="font- mulish p-4 text-lg font-[600] text-[1.111vw]">
             List of Newly Uploaded Documents
           </h1>
@@ -157,7 +157,7 @@ export const Dashboard = () => {
           </table>
         </div>
 
-        <div className="flex items-center justify-between mt-4">
+        <div className="flex items-center justify-between px-2 py-1">
           <div className="text-sm text-gray-500">Showing 1-09 Of 78</div>
           <div className="flex items-center">
             <div className="h-2 w-16 bg-blue-500 rounded mx-2"></div>
