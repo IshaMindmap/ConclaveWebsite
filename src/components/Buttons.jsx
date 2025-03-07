@@ -12,11 +12,11 @@ export const BlueButton = ({ text, onClick }) => {
 };
 
 export const LoginButton = ({ text }) => {
-    return (
-      <div className="w-[15.972vw] bg-[#111478] flex justify-center items-center rounded-[8px] text-[#FFFFFF] font-mulish font-[700] text-[0.903vw] p-[1.146vw] cursor-pointer">
-        {text}
-      </div>
-    );
+  return (
+    <div className="w-full sm:w-36 md:w-48 lg:w-56 bg-[#111478] flex justify-center items-center rounded-[8px] text-white font-mulish font-bold text-sm md:text-base py-3 px-4 md:px-6 cursor-pointer hover:bg-[#1a1e9a] transition-colors">
+      {text}
+    </div>
+  );
 };
 
 export const DashboardButton = ({ text }) => {
