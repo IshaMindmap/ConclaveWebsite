@@ -26,35 +26,34 @@ export const LandingScreen = () => {
 
   // Mobile design
   const MobileDesign = () => (
-    <div className="flex flex-col min-h-screen bg-white">
-      {/* Logo centered at top */}
-      <div className="flex justify-center py-8 bg-[#f5f7ff]">
-        <img src={centrixlogo} alt="Centrix Logo" className="w-40 max-w-full" />
+    <div className="flex flex-col w-full min-h-screen">
+      {/* Left Panel - Blue background */}
+      <div className="bg-[#111478] h-[30vh] p-12 flex justify-start items-start">
+        <img src={centrixwhitelogo} alt="Centrix Logo" className="max-w-full" />
       </div>
 
-      {/* Main content - centered vertically */}
-      <div className="flex-1 flex flex-col justify-center items-center px-6 py-12">
-        <div className="text-center w-full max-w-xs mb-12">
-          <div className="font-mulish font-bold text-3xl text-[#111478] mb-8">
-            Welcome
+      {/* Right Panel - Login/Signup */}
+      <div className=" flex flex-col justify-between items-center py-12 px-6 text-center">
+        <div className="flex-1"></div> {/* Spacer */}
+        <img src={centrixsymbol} alt="Centrix Symbol" className="w-20" />
+        <div className="text-center w-full max-w-md">
+          <div className="font-mulish font-bold mt-4 text-3xl text-[#111478] mb-6">
+            Get Started
           </div>
 
-          <div className="flex flex-col gap-4 w-full">
-            <div onClick={() => navigate('/login')} className="w-full">
+          <div className="flex flex-col gap-4 justify-center items-center">
+            <div onClick={() => navigate('/login')} className="w-auto">
               <LoginButton text={'Login'} />
             </div>
-            <div onClick={() => navigate('/signup')} className="w-full">
+            <div onClick={() => navigate('/signup')} className="w-auto">
               <LoginButton text={'Signup'} />
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Footer */}
-      <div className="py-6 flex flex-col items-center bg-[#f5f7ff]">
-        <img src={centrixsymbol} alt="Centrix Symbol" className="w-16" />
-        <div className="text-[#A1A1A1] text-xs mt-4 font-normal">
-          Privacy Policy | Terms Of Use
+        <div className="mt-24 flex flex-col items-center">
+          <div className="text-[#A1A1A1] text-sm font-normal">
+            Disclaimer | Privacy Policy | Terms Of Use
+          </div>
         </div>
       </div>
     </div>
