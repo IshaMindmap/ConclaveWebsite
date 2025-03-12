@@ -3,7 +3,7 @@ import React from "react";
 export const BlueButton = ({ text, onClick }) => {
   return (
     <div
-      className="bg-[#19213D] flex justify-center items-center rounded-lg text-white font-mulish font-bold text-sm md:text-[0.903vw] p-3 md:p-[1.146vw] cursor-pointer"
+      className="bg-[#19213D] w-full flex justify-center items-center rounded-lg text-white font-mulish font-bold text-sm md:text-[0.903vw] p-3 md:p-[1.146vw] cursor-pointer"
       onClick={onClick}
     >
       {text}

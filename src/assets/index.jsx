@@ -18,10 +18,13 @@ import filtericon from './filtericon.svg';
 import viewicon from './viewicon.svg';
 import downloadicon from './downloadicon.svg';
 import deleteicon from './deleteicon.svg';
-import userIcon from './userIcon.jpg'
-
+import userIcon from './userIcon.jpg';
+import robotbg from './robotbg.svg';
+import smallrobotbg from './smallrobotbg.svg';
 
 export {
+  smallrobotbg,
+  robotbg,
   viewicon,
   userIcon,
   downloadicon,

@@ -3,8 +3,10 @@ import { BlueButton } from '../components/Buttons';
 import { useNavigate, useLocation } from 'react-router-dom';
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
+import { centrixwhitelogo, robotbg } from '../assets';
 
 export const Otp = () => {
+  const [isMobile, setIsMobile] = useState(false);
   const navigate = useNavigate();
   const [otp, setOtp] = useState(['', '', '', '']);
   const mobileNumber =
@@ -93,15 +95,47 @@ export const Otp = () => {
     }
   };
 
-  return (
-    <div className="flex flex-col w-full h-screen justify-center items-center px-4">
-      <div className="w-full max-w-md text-center">
+
+  // Detect if screen is mobile
+  useEffect(() => {
+    const checkIfMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    // Initial check
+    checkIfMobile();
+
+    // Add event listener for window resize
+    window.addEventListener('resize', checkIfMobile);
+
+    // Cleanup
+    return () => window.removeEventListener('resize', checkIfMobile);
+  }, []);
+
+  // Mobile design
+const MobileDesign = () => (
+  <div className="flex flex-col">
+    {/* Left Side with Background Image */}
+    <div
+      className="h-[40vh] p-6 pt-8 flex justify-start items-start"
+      style={{
+        backgroundImage: `url(${robotbg})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
+    >
+      <img src={centrixwhitelogo} alt="Centrix Logo" className="max-w-full" />
+    </div>
+
+    {/* Right Side (OTP Form) */}
+    <div className=" h-[50vh] flex justify-center items-center">
+      <div className="w-full max-w-md text-center flex flex-col justify-center items-center h-full">
         <h1 className="text-[#111478] font-bold font-mulish text-2xl sm:text-3xl mb-6">
           Enter OTP
         </h1>
 
         {/* OTP Inputs */}
-        <div className="flex justify-center gap-2 sm:gap-4 mb-6">
+        <div className="flex justify-center items-center gap-2 sm:gap-4 mb-6">
           {otp.map((digit, index) => (
             <input
               key={index}
@@ -112,7 +146,7 @@ export const Otp = () => {
               onChange={(e) => handleChange(e, index)}
               onKeyDown={(e) => handleKeyDown(e, index)}
               onPaste={index === 0 ? handlePaste : null}
-              className="w-12 h-12 sm:w-16 sm:h-16 text-center text-lg sm:text-2xl font-bold border-2 border-[#19213D] rounded-lg focus:outline-none focus:border-[#19213D] focus:ring-2 focus:ring-[#19213D] transition-all duration-150"
+              className="w-20 h-16  text-center text-lg font-bold border-2 border-[#19213D] rounded-lg focus:outline-none focus:border-[#19213D] focus:ring-2 focus:ring-[#19213D] transition-all duration-150"
             />
           ))}
         </div>
@@ -125,11 +159,13 @@ export const Otp = () => {
           <p className="text-green-600 text-sm sm:text-base mb-2">{success}</p>
         )}
 
-        {/* Continue Button */}
-        <div className="flex justify-center">
+        {/* Continue Button (Centered) */}
+        <div className="w-[85%] flex justify-center items-center">
           <BlueButton text="CONTINUE" onClick={handleVerifyOTP} />
         </div>
-        <div className="text-gray-700 font-semibold text-sm md:text-[0.903vw] flex justify-center items-center mt-4 md:mt-[1.806vw]">
+
+        {/* Sign Up Link */}
+        <div className="text-gray-700 font-semibold text-sm mt-4">
           Register here, if not
           <span
             className="text-[#02A82B] cursor-pointer ml-1"
@@ -140,7 +176,78 @@ export const Otp = () => {
         </div>
       </div>
     </div>
-  );
+  </div>
+);
+
+  // Desktop design
+const DesktopDesign = () => (
+  <div className="flex h-screen">
+    {/* Left Side with Background Image */}
+    <div
+      className="w-1/2 p-12 flex justify-start items-start"
+      style={{
+        backgroundImage: `url(${robotbg})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
+    >
+      <img src={centrixwhitelogo} alt="Centrix Logo" className="max-w-full" />
+    </div>
+
+    {/* Right Side (OTP Form) */}
+    <div className="w-1/2 flex justify-center items-center">
+      <div className="w-full max-w-md text-center flex flex-col justify-center items-center h-full">
+        <h1 className="text-[#111478] font-bold font-mulish text-2xl sm:text-3xl mb-6">
+          Enter OTP
+        </h1>
+
+        {/* OTP Inputs */}
+        <div className="flex justify-center items-center gap-2 sm:gap-4 mb-6">
+          {otp.map((digit, index) => (
+            <input
+              key={index}
+              ref={inputRefs[index]}
+              type="text"
+              maxLength="1"
+              value={digit}
+              onChange={(e) => handleChange(e, index)}
+              onKeyDown={(e) => handleKeyDown(e, index)}
+              onPaste={index === 0 ? handlePaste : null}
+              className="w-20 h-16  text-center text-lg font-bold border-2 border-[#19213D] rounded-lg focus:outline-none focus:border-[#19213D] focus:ring-2 focus:ring-[#19213D] transition-all duration-150"
+            />
+          ))}
+        </div>
+
+        {/* Error/Success Messages */}
+        {error && (
+          <p className="text-red-500 text-sm sm:text-base mb-2">{error}</p>
+        )}
+        {success && (
+          <p className="text-green-600 text-sm sm:text-base mb-2">{success}</p>
+        )}
+
+        {/* Continue Button (Centered) */}
+        <div className="w-[85%] flex justify-center items-center">
+          <BlueButton text="CONTINUE" onClick={handleVerifyOTP} />
+        </div>
+
+        {/* Sign Up Link */}
+        <div className="text-gray-700 font-semibold text-sm mt-4">
+          Register here, if not
+          <span
+            className="text-[#02A82B] cursor-pointer ml-1"
+            onClick={() => navigate('/signup')}
+          >
+            Sign up
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+  // Render different layouts based on screen size
+  return isMobile ? <MobileDesign /> : <DesktopDesign />;
 };
 
 export default Otp;

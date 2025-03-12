@@ -14,14 +14,16 @@ import Main from './pages/Main';
 import Otp from './pages/Otp';
 import LandingScreen from './pages/LandingScreen';
 import Dashboard from './pages/Dashboard';
+import Terms from './pages/Terms';
 
 // Layout component to handle conditional navbar rendering
 const Layout = ({ children }) => {
   const location = useLocation();
 
-  const isLandingPage = location.pathname === '/';
+  const isLandingPage =
+    location.pathname === '/' || location.pathname === '/login';
   const isFeaturesPage =
-    location.pathname === '/features' || location.pathname === '/dashboard'; ;
+    location.pathname === '/features' || location.pathname === '/dashboard' ;
   const isProfilePage =
     location.pathname === '/main';
 
@@ -30,7 +32,7 @@ const Layout = ({ children }) => {
       {/* Show navbar on all pages except the landing and features pages */}
       {!isLandingPage &&
         !isFeaturesPage &&
-        (isProfilePage ? <NavbarWithProfile /> : <Navbar />)}
+        (isProfilePage ? <NavbarWithProfile /> :'')}
       {children}
     </>
   );
@@ -46,6 +48,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/features" element={<Features />} />
           <Route path="/main" element={<Main />} />
+          <Route path="/terms" element={<Terms />} />
           <Route path="/otp" element={<Otp />} />
           <Route path="/dashboard" element={<Dashboard />} />
           {/* Add other routes as needed */}
