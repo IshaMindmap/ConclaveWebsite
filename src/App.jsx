@@ -51,7 +51,6 @@ function App() {
           <Route path="/terms" element={<Terms />} />
           <Route path="/otp" element={<Otp />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          {/* Add other routes as needed */}
         </Routes>
       </Layout>
     </Router>
