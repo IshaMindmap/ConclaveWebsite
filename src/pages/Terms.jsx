@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import InputBox from '../components/InputBox';
-import BlueButton, { LoginButton } from '../components/Buttons';
+import { LoginButton, BlueButton, DashboardButton, DenyButton } from '../components/Buttons';
 import { useNavigate } from 'react-router-dom';
 import {
   centrixlogo,
@@ -8,11 +8,17 @@ import {
   centrixwhitelogo,
   robotbg,
   smallrobotbg,
+  termsrobotbg,
 } from '../assets';
 
 export const Terms = () => {
   const navigate = useNavigate();
   const [isMobile, setIsMobile] = useState(false);
+
+  const handleClick = () => {
+    console.log('Button clicked!');
+    // Add any additional logic here
+  };
 
   // Detect if screen is mobile
   useEffect(() => {
@@ -32,12 +38,17 @@ export const Terms = () => {
 
   // Mobile design
   const MobileDesign = () => (
-    <div className="flex flex-col w-full min-h-screen">
-      {/* Top Panel - Blue background with dynamic height */}
+    <div
+      className="flex flex-col w-full min-h-screen"
+      style={{
+        background: 'linear-gradient(90deg, #182E33,#182A2E,#0E1C1F)',
+      }}
+    >
+      {/* Top Panel with Logo */}
       <div
-        className="h-[50vh] p-4 sm:p-6 pt-6 sm:pt-8 flex justify-start items-start"
+        className="w-full h-32 p-4 flex justify-start items-start"
         style={{
-          backgroundImage: `url(${smallrobotbg})`,
+          backgroundImage: `url(${termsrobotbg})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}
@@ -45,40 +56,34 @@ export const Terms = () => {
         <img
           src={centrixwhitelogo}
           alt="Centrix Logo"
-          className="w-20 sm:w-24"
+          className="w-28 max-w-full"
         />
       </div>
 
-      {/* Bottom Panel - Login/Signup with responsive padding and width */}
-      <div className="flex-1 flex flex-col justify-between items-center py-4 sm:py-6 px-4 sm:px-6 text-center">
+      {/* Main Content Area */}
+      <div className="w-full flex-grow flex flex-col justify-between items-center py-6 px-4 text-center">
         <div className="flex-1"></div> {/* Spacer */}
-        <img
-          src={centrixsymbol}
-          alt="Centrix Symbol"
-          className="w-10 sm:w-12"
-        />
-        <div className="text-center w-full max-w-md">
-          <div className="font-mulish font-bold mt-6 sm:mt-8 text-2xl sm:text-3xl text-[#111478] mb-4 sm:mb-6">
-            Get Started
+        {/* Areas of Interest Card */}
+        <div className="font-mulish w-full p-6 bg-white text-left rounded-lg">
+          <div className="text-xl text-[#111478] italic font-bold mb-6">
+            Select Area Of Interest
           </div>
 
-          <div className="flex flex-col gap-3 sm:gap-4 justify-center items-center">
-            <div
-              onClick={() => navigate('/login')}
-              className="w-full max-w-xs sm:max-w-sm"
-            >
-              <LoginButton text={'Login'} />
-            </div>
-            <div
-              onClick={() => navigate('/signup')}
-              className="w-full max-w-xs sm:max-w-sm"
-            >
-              <LoginButton text={'Signup'} />
-            </div>
+          <div className="mt-4 text-base flex justify-center items-center p-4 rounded-lg bg-[#19213D] text-white italic font-bold mb-4">
+            Cardiology
+          </div>
+
+          <div className="text-base flex justify-center items-center p-4 rounded-lg border border-[#19213D] bg-white text-[#19213D] italic font-bold mb-4">
+            Diabetology
+          </div>
+
+          <div className="text-base flex justify-center items-center p-4 rounded-lg border border-[#19213D] bg-white text-[#19213D] italic font-bold mb-4">
+            Respiratory
           </div>
         </div>
-        <div className="mt-8 sm:mt-12 flex flex-col items-center">
-          <div className="text-[#A1A1A1] text-xs sm:text-sm font-normal">
+        {/* Footer */}
+        <div className="mt-8 flex flex-col items-center">
+          <div className="text-[#313131] bg-white rounded-full p-2 text-xs font-normal">
             Disclaimer | Privacy Policy | Terms Of Use
           </div>
         </div>
@@ -91,11 +96,9 @@ export const Terms = () => {
     <div className="flex flex-row w-full min-h-screen">
       {/* Left Panel - Blue background */}
       <div
-        className="w-1/2 p-6 md:p-8 lg:p-12 flex justify-start items-start"
+        className="w-[43.33%] p-6 md:p-8 lg:p-12 flex justify-start items-start"
         style={{
-          backgroundImage: `url(${robotbg})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
+          backgroundImage: `url(${termsrobotbg})`,
         }}
       >
         <img
@@ -106,36 +109,49 @@ export const Terms = () => {
       </div>
 
       {/* Right Panel - Login/Signup */}
-      <div className="w-1/2 flex flex-col justify-between items-center py-8 md:py-10 lg:py-12 px-4 md:px-6 text-center">
+      <div
+        className="fill-available flex flex-col justify-between items-center py-8 md:py-10 lg:py-12 px-4 md:px-6 text-center"
+        style={{
+          background: 'linear-gradient(90deg, #182E33,#182A2E,#0E1C1F)',
+        }}
+      >
         <div className="flex-1"></div> {/* Spacer */}
-        <div className="text-center w-full max-w-md">
-          <div className="font-mulish font-bold text-3xl md:text-4xl text-[#111478] mb-4 md:mb-6">
-            Get Started
+        <div className="font-mulish w-[38.542vw] p-8 bg-white text-left rounded-[1.667vw]">
+          <div className="text-[0.833vw] text-[#19213D] font-[700] mb-4">
+            Terms & Conditions
           </div>
-
-          <div className="flex gap-3 md:gap-4 justify-center items-center">
-            <div
-              onClick={() => navigate('/login')}
-              className="w-32 md:w-40 lg:w-48"
-            >
-              <LoginButton text={'Login'} />
-            </div>
-            <div
-              onClick={() => navigate('/signup')}
-              className="w-32 md:w-40 lg:w-48"
-            >
-              <LoginButton text={'Signup'} />
-            </div>
+          <div className="text-[0.833vw] text-[#313131] font-[400]">
+            1. Acceptance of Terms:
+          </div>
+          <div className="text-[0.833vw] text-[#313131] font-[400]">
+            Your access to and use of centrix is subject to these Terms &
+            Conditions.
+          </div>
+          <div className="text-[0.833vw] text-[#313131] font-[400]">
+            2. By using the platform, you agree to comply with all applicable
+            laws and regulations.
+          </div>
+          <div className="text-[0.833vw] text-[#313131] font-[400]">
+            3. Eligibility:
+          </div>
+          <div className="text-[0.833vw] text-[#313131] font-[400]">
+            You must be at least 18 years old or have legal guardian consent to
+            use centrix.
+          </div>
+          <div className="text-[0.833vw] text-[#313131] font-[400]">
+            4. User Responsibilities:
+          </div>
+          <div className="text-[0.833vw] text-[#313131] font-[400] mb-[4rem]">
+            Provide accurate and complete information.
+          </div>
+          <div className="flex flex-col gap-4">
+            <BlueButton text={'ACCEPT'} onClick={handleClick} />
+            <DenyButton text={'DENY'} />
           </div>
         </div>
-        <div className="mt-24 md:mt-32 lg:mt-40 flex flex-col items-center">
-          <img
-            src={centrixsymbol}
-            alt="Centrix Symbol"
-            className="w-16 md:w-20"
-          />
-          <div className="text-[#A1A1A1] text-xs md:text-sm mt-3 md:mt-4 font-normal">
-            Privacy Policy | Terms Of Use
+        <div className="mt-28 flex flex-col items-center">
+          <div className="text-[#313131] bg-white rounded-full p-2 text-xs md:text-sm mt-3 md:mt-4 font-normal">
+            Disclaimer | Privacy Policy | Terms Of Use
           </div>
         </div>
       </div>

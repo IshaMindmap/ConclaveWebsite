@@ -27,6 +27,20 @@ export const DashboardButton = ({ text }) => {
   );
 };
 
+export const DenyButton = ({ text, onClick }) => {
+  return (
+    <div
+      className="w-full border border-[#19213D] flex justify-center items-center rounded-lg md:rounded-[0.417vw] 
+        text-[#19213D] font-mulish font-bold text-sm md:text-[0.903vw] 
+        py-2 md:py-[0.625vw] cursor-pointer"
+      onClick={onClick}
+    >
+      {text}
+    </div>
+  );
+};
 
 
-export default { DashboardButton,BlueButton, LoginButton };
+
+
+export default { DenyButton, DashboardButton, BlueButton, LoginButton };
