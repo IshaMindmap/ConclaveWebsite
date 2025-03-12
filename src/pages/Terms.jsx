@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import InputBox from '../components/InputBox';
-import { LoginButton, BlueButton, DashboardButton, DenyButton } from '../components/Buttons';
+import {
+  LoginButton,
+  BlueButton,
+  DashboardButton,
+  DenyButton,
+} from '../components/Buttons';
 import { useNavigate } from 'react-router-dom';
 import {
   centrixlogo,
@@ -13,77 +18,179 @@ import {
 
 export const Terms = () => {
   const navigate = useNavigate();
-  const [isMobile, setIsMobile] = useState(false);
+  const [screenSize, setScreenSize] = useState('desktop');
 
   const handleClick = () => {
     console.log('Button clicked!');
     // Add any additional logic here
   };
 
-  // Detect if screen is mobile
+  // Improved screen size detection with multiple breakpoints
   useEffect(() => {
-    const checkIfMobile = () => {
-      setIsMobile(window.innerWidth < 768);
+    const checkScreenSize = () => {
+      if (window.innerWidth < 640) {
+        setScreenSize('mobile');
+      } else if (window.innerWidth >= 640 && window.innerWidth < 1024) {
+        setScreenSize('tablet');
+      } else {
+        setScreenSize('desktop');
+      }
     };
 
     // Initial check
-    checkIfMobile();
+    checkScreenSize();
 
-    // Add event listener for window resize
-    window.addEventListener('resize', checkIfMobile);
+    // Add event listener for window resize with debounce
+    let resizeTimer;
+    const handleResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(checkScreenSize, 100);
+    };
+
+    window.addEventListener('resize', handleResize);
 
     // Cleanup
-    return () => window.removeEventListener('resize', checkIfMobile);
+    return () => {
+      clearTimeout(resizeTimer);
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
-  // Mobile design
+  // Mobile design - optimized for small screens
   const MobileDesign = () => (
     <div
-      className="flex flex-col w-full min-h-screen"
-      style={{
-        background: 'linear-gradient(90deg, #182E33,#182A2E,#0E1C1F)',
-      }}
+      className="flex flex-col w-full min-h-screen bg-cover bg-center relative"
+      style={{ backgroundImage: `url(${termsrobotbg})` }}
     >
-      {/* Top Panel with Logo */}
-      <div
-        className="w-full h-32 p-4 flex justify-start items-start"
-        style={{
-          backgroundImage: `url(${termsrobotbg})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-        }}
-      >
-        <img
-          src={centrixwhitelogo}
-          alt="Centrix Logo"
-          className="w-28 max-w-full"
-        />
-      </div>
+      {/* Blur Overlay */}
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-md"></div>
 
-      {/* Main Content Area */}
-      <div className="w-full flex-grow flex flex-col justify-between items-center py-6 px-4 text-center">
-        <div className="flex-1"></div> {/* Spacer */}
-        {/* Areas of Interest Card */}
-        <div className="font-mulish w-full p-6 bg-white text-left rounded-lg">
-          <div className="text-xl text-[#111478] italic font-bold mb-6">
-            Select Area Of Interest
-          </div>
+      {/* Content Container */}
+      <div className="relative flex flex-col w-full h-full">
+        {/* Top Panel - Logo */}
+        <div className="w-full p-4 flex justify-start items-start">
+          <img
+            src={centrixwhitelogo}
+            alt="Centrix Logo"
+            className="w-28 max-w-full"
+          />
+        </div>
 
-          <div className="mt-4 text-base flex justify-center items-center p-4 rounded-lg bg-[#19213D] text-white italic font-bold mb-4">
-            Cardiology
-          </div>
-
-          <div className="text-base flex justify-center items-center p-4 rounded-lg border border-[#19213D] bg-white text-[#19213D] italic font-bold mb-4">
-            Diabetology
-          </div>
-
-          <div className="text-base flex justify-center items-center p-4 rounded-lg border border-[#19213D] bg-white text-[#19213D] italic font-bold mb-4">
-            Respiratory
+        {/* Bottom Panel - Terms Card */}
+        <div className="mt-12 w-full flex-grow flex flex-col justify-center items-center px-4 pb-6">
+          {/* Terms & Conditions Card */}
+          <div className="font-mulish w-full max-h-[80vh] overflow-y-auto p-6 bg-white text-left rounded-xl shadow-lg relative z-10">
+            <div className="text-lg text-center text-[#19213D] font-bold mb-4">
+              Terms & Conditions
+            </div>
+            <div className="space-y-3 mb-6">
+              <div>
+                <div className="text-sm text-[#313131] font-medium">
+                  1. Acceptance of Terms:
+                </div>
+                <div className="text-sm text-[#313131]">
+                  Your access to and use of centrix is subject to these Terms &
+                  Conditions.
+                </div>
+              </div>
+              <div>
+                <div className="text-sm text-[#313131]">
+                  2. By using the platform, you agree to comply with all
+                  applicable laws and regulations.
+                </div>
+              </div>
+              <div>
+                <div className="text-sm text-[#313131] font-medium">
+                  3. Eligibility:
+                </div>
+                <div className="text-sm text-[#313131]">
+                  You must be at least 18 years old or have legal guardian
+                  consent to use centrix.
+                </div>
+              </div>
+              <div>
+                <div className="text-sm text-[#313131] font-medium">
+                  4. User Responsibilities:
+                </div>
+                <div className="text-sm text-[#313131]">
+                  Provide accurate and complete information.
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-col gap-3">
+              <BlueButton text={'ACCEPT'} onClick={handleClick} />
+              <DenyButton text={'DENY'} />
+            </div>
           </div>
         </div>
-        {/* Footer */}
-        <div className="mt-8 flex flex-col items-center">
-          <div className="text-[#313131] bg-white rounded-full p-2 text-xs font-normal">
+      </div>
+    </div>
+  );
+
+  // Tablet design - optimized for medium screens
+  const TabletDesign = () => (
+    <div className="flex flex-col w-full min-h-screen">
+      {/* Background with overlay */}
+      <div
+        className="w-full h-40 bg-cover bg-center relative"
+        style={{ backgroundImage: `url(${termsrobotbg})` }}
+      >
+        <div className="absolute inset-0 bg-black/30 backdrop-blur-sm"></div>
+        <div className="relative p-6 flex justify-start items-start h-full">
+          <img
+            src={centrixwhitelogo}
+            alt="Centrix Logo"
+            className="w-36 max-w-full"
+          />
+        </div>
+      </div>
+
+      {/* Terms Content */}
+      <div
+        className="flex-grow flex flex-col justify-start items-center py-8 px-6"
+        style={{
+          background: 'linear-gradient(90deg, #182E33,#182A2E,#0E1C1F)',
+        }}
+      >
+        {/* Terms & Conditions Card */}
+        <div className="font-mulish w-full max-w-lg p-8 bg-white text-left rounded-xl shadow-lg">
+          <div className="text-lg text-center text-[#19213D] font-bold mb-6">
+            Terms & Conditions
+          </div>
+          <div className="space-y-4 mb-8">
+            <div>
+              <div className="font-medium">1. Acceptance of Terms:</div>
+              <div>
+                Your access to and use of centrix is subject to these Terms &
+                Conditions.
+              </div>
+            </div>
+            <div>
+              <div>
+                2. By using the platform, you agree to comply with all
+                applicable laws and regulations.
+              </div>
+            </div>
+            <div>
+              <div className="font-medium">3. Eligibility:</div>
+              <div>
+                You must be at least 18 years old or have legal guardian consent
+                to use centrix.
+              </div>
+            </div>
+            <div>
+              <div className="font-medium">4. User Responsibilities:</div>
+              <div>Provide accurate and complete information.</div>
+            </div>
+          </div>
+          <div className="flex flex-col gap-4">
+            <BlueButton text={'ACCEPT'} onClick={handleClick} />
+            <DenyButton text={'DENY'} />
+          </div>
+        </div>
+
+        <div className="mt-12 flex flex-col items-center">
+          <div className="text-[#313131] bg-white rounded-full p-2 text-sm font-normal">
             Disclaimer | Privacy Policy | Terms Of Use
           </div>
         </div>
@@ -91,12 +198,12 @@ export const Terms = () => {
     </div>
   );
 
-  // Desktop design
+  // Desktop design - optimized for large screens
   const DesktopDesign = () => (
     <div className="flex flex-row w-full min-h-screen">
-      {/* Left Panel - Blue background */}
+      {/* Left Panel - Background */}
       <div
-        className="w-[43.33%] p-6 md:p-8 lg:p-12 flex justify-start items-start"
+        className="w-2/5 p-12 flex justify-start items-start bg-cover bg-center"
         style={{
           backgroundImage: `url(${termsrobotbg})`,
         }}
@@ -104,53 +211,64 @@ export const Terms = () => {
         <img
           src={centrixwhitelogo}
           alt="Centrix Logo"
-          className="w-32 md:w-40 lg:w-48 max-w-full"
+          className="w-48 max-w-full"
         />
       </div>
 
-      {/* Right Panel - Login/Signup */}
+      {/* Right Panel - Terms Content */}
       <div
-        className="fill-available flex flex-col justify-between items-center py-8 md:py-10 lg:py-12 px-4 md:px-6 text-center"
+        className="w-3/5 flex flex-col justify-between items-center py-12 px-8"
         style={{
           background: 'linear-gradient(90deg, #182E33,#182A2E,#0E1C1F)',
         }}
       >
-        <div className="flex-1"></div> {/* Spacer */}
-        <div className="font-mulish w-[38.542vw] p-8 bg-white text-left rounded-[1.667vw]">
-          <div className="text-[0.833vw] text-[#19213D] font-[700] mb-4">
+        <div className="flex-1"></div> {/* Top Spacer */}
+        {/* Terms & Conditions Card */}
+        <div className="font-mulish w-full max-w-2xl p-10 bg-white text-left rounded-2xl shadow-xl">
+          <div className="text-xl text-center text-[#19213D] font-bold mb-6">
             Terms & Conditions
           </div>
-          <div className="text-[0.833vw] text-[#313131] font-[400]">
-            1. Acceptance of Terms:
+          <div className="space-y-4 mb-10">
+            <div>
+              <div className="text-base text-[#313131] font-medium">
+                1. Acceptance of Terms:
+              </div>
+              <div className="text-base text-[#313131]">
+                Your access to and use of centrix is subject to these Terms &
+                Conditions.
+              </div>
+            </div>
+            <div>
+              <div className="text-base text-[#313131]">
+                2. By using the platform, you agree to comply with all
+                applicable laws and regulations.
+              </div>
+            </div>
+            <div>
+              <div className="text-base text-[#313131] font-medium">
+                3. Eligibility:
+              </div>
+              <div className="text-base text-[#313131]">
+                You must be at least 18 years old or have legal guardian consent
+                to use centrix.
+              </div>
+            </div>
+            <div>
+              <div className="text-base text-[#313131] font-medium">
+                4. User Responsibilities:
+              </div>
+              <div className="text-base text-[#313131]">
+                Provide accurate and complete information.
+              </div>
+            </div>
           </div>
-          <div className="text-[0.833vw] text-[#313131] font-[400]">
-            Your access to and use of centrix is subject to these Terms &
-            Conditions.
-          </div>
-          <div className="text-[0.833vw] text-[#313131] font-[400]">
-            2. By using the platform, you agree to comply with all applicable
-            laws and regulations.
-          </div>
-          <div className="text-[0.833vw] text-[#313131] font-[400]">
-            3. Eligibility:
-          </div>
-          <div className="text-[0.833vw] text-[#313131] font-[400]">
-            You must be at least 18 years old or have legal guardian consent to
-            use centrix.
-          </div>
-          <div className="text-[0.833vw] text-[#313131] font-[400]">
-            4. User Responsibilities:
-          </div>
-          <div className="text-[0.833vw] text-[#313131] font-[400] mb-[4rem]">
-            Provide accurate and complete information.
-          </div>
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 ">
             <BlueButton text={'ACCEPT'} onClick={handleClick} />
             <DenyButton text={'DENY'} />
           </div>
         </div>
-        <div className="mt-28 flex flex-col items-center">
-          <div className="text-[#313131] bg-white rounded-full p-2 text-xs md:text-sm mt-3 md:mt-4 font-normal">
+        <div className="mt-16 flex flex-col items-center">
+          <div className="text-[#313131] bg-white rounded-full p-3 text-sm font-normal">
             Disclaimer | Privacy Policy | Terms Of Use
           </div>
         </div>
@@ -159,7 +277,13 @@ export const Terms = () => {
   );
 
   // Render different layouts based on screen size
-  return isMobile ? <MobileDesign /> : <DesktopDesign />;
+  if (screenSize === 'mobile') {
+    return <MobileDesign />;
+  } else if (screenSize === 'tablet') {
+    return <TabletDesign />;
+  } else {
+    return <DesktopDesign />;
+  }
 };
 
 export default Terms;

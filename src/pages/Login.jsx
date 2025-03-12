@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import InputBox from '../components/InputBox';
 import { BlueButton } from '../components/Buttons';
@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { centrixsymbol, centrixwhitelogo, robotbg } from '../assets';
 
 export const Login = () => {
-   const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const navigate = useNavigate();
   const [mobileNumber, setMobileNumber] = useState('');
   const [error, setError] = useState('');
@@ -44,7 +44,7 @@ export const Login = () => {
     }
   };
 
-  // Detect if screen is mobile
+  // Detect if screen is mobile with more specific breakpoints
   useEffect(() => {
     const checkIfMobile = () => {
       setIsMobile(window.innerWidth < 768);
@@ -60,118 +60,108 @@ export const Login = () => {
     return () => window.removeEventListener('resize', checkIfMobile);
   }, []);
 
+  // Form section component - shared between mobile and desktop
+  const FormSection = () => (
+    <div className="w-full max-w-md lg:max-w-lg">
+      <div className="text-[#111478] font-bold font-mulish text-xl sm:text-2xl lg:text-3xl mb-4 sm:mb-6 text-center md:text-left">
+        Welcome Back
+      </div>
+      <InputBox
+        label="MOBILE NO."
+        id="mobile_number"
+        name="mobile_number"
+        placeholder="Enter Mobile No."
+        value={mobileNumber}
+        onChange={handleChange}
+      />
+      <div className="w-full mt-4 md:mt-6">
+        {/* Show errors or success messages */}
+        {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
+        {success && <p className="text-green-500 text-sm mb-2">{success}</p>}
+        <div>
+          <BlueButton text={'SEND OTP'} onClick={handleSendOTP} />
+        </div>
+      </div>
+      <div className="text-gray-700 font-semibold text-xs sm:text-sm flex justify-center items-center mt-4 md:mt-6">
+        Register here, if not
+        <span
+          className="text-[#02A82B] cursor-pointer ml-1"
+          onClick={() => navigate('/signup')}
+        >
+          Sign up
+        </span>
+      </div>
+    </div>
+  );
+
+  // Footer component - shared between mobile and desktop
+  const Footer = ({ className }) => (
+    <div className={`flex flex-col items-center ${className}`}>
+      <img
+        src={centrixsymbol}
+        alt="Centrix Symbol"
+        className="w-10 sm:w-12 md:w-16 lg:w-20"
+      />
+      <div className="text-[#A1A1A1] text-xs sm:text-sm mt-2 sm:mt-4 font-normal text-center">
+        {isMobile
+          ? 'Privacy Policy | Terms Of Use'
+          : 'Disclaimer | Privacy Policy | Terms Of Use'}
+      </div>
+    </div>
+  );
+
   // Mobile design
   const MobileDesign = () => (
-    <div className="flex flex-col">
+    <div className="flex flex-col min-h-screen">
       <div
-        className="h-[44.71vh] p-6 pt-8 flex justify-start items-start"
+        className="h-[40vh] sm:h-[45vh] p-4 sm:p-6 pt-6 sm:pt-8 flex justify-start items-start"
         style={{
           backgroundImage: `url(${robotbg})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}
       >
-        <img src={centrixwhitelogo} alt="Centrix Logo" className="w-24" />
+        <img
+          src={centrixwhitelogo}
+          alt="Centrix Logo"
+          className="w-20 sm:w-24"
+        />
       </div>
-      <div className=" flex flex-col h-[50vh] mt-4 px-4 md:px-0 relative">
-        <div className="w-full max-w-md md:max-w-[30.972vw]">
-          <div className="text-[#111478] font-bold font-mulish text-2xl md:text-[2.222vw] mb-6 md:mb-[1.458vw] text-center md:text-left">
-            Welcome Back
-          </div>
-          <InputBox
-            label="MOBILE NO."
-            id="mobile_number"
-            name="mobile_number"
-            placeholder="Enter Mobile No."
-            value={mobileNumber}
-            onChange={handleChange}
-          />
-          <div className="w-full mt-4 md:mt-[1.806vw]">
-            {/* Show errors or success messages */}
-            {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
-            {success && (
-              <p className="text-green-500 text-sm mb-2">{success}</p>
-            )}
-            <div>
-              <BlueButton text={'SEND OTP'} onClick={handleSendOTP} />
-            </div>
-          </div>
-          <div className="text-gray-700 font-semibold text-sm md:text-[0.903vw] flex justify-center items-center mt-4 md:mt-[1.806vw]">
-            Register here, if not
-            <span
-              className="text-[#02A82B] cursor-pointer ml-1"
-              onClick={() => navigate('/signup')}
-            >
-              Sign up
-            </span>
-          </div>
+      <div className="flex flex-col flex-grow px-4 sm:px-6 py-6 relative">
+        <div className="mx-auto w-full max-w-md">
+          <FormSection />
         </div>
 
-        {/* Footer added at the bottom */}
-        <div className="absolute bottom-2 left-0 right-0 flex flex-col items-center mb-8">
-          <img src={centrixsymbol} alt="Centrix Symbol" className="w-12" />
-          <div className="text-[#A1A1A1] text-sm mt-4 font-normal">
-            Privacy Policy | Terms Of Use
-          </div>
-        </div>
+        {/* Footer positioned at bottom */}
+        <Footer className="mt-auto mb-6" />
       </div>
     </div>
   );
 
   // Desktop design
   const DesktopDesign = () => (
-   <div className="flex">
+    <div className="flex min-h-screen">
       <div
-        className=" w-1/2 p-12 flex justify-start items-start"
+        className="w-1/2 p-8 md:p-12 flex justify-start items-start"
         style={{
           backgroundImage: `url(${robotbg})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}
       >
-        <img src={centrixwhitelogo} alt="Centrix Logo" className="max-w-full" />
+        <img
+          src={centrixwhitelogo}
+          alt="Centrix Logo"
+          className="w-32 md:w-40 lg:w-48"
+        />
       </div>
-      <div className="flex self-center w-1/2 flex-col justify-center items-center h-screen px-4 md:px-0 relative">
-        <div className="w-full max-w-md md:max-w-[30.972vw]">
-          <div className="text-[#111478] font-bold font-mulish text-2xl md:text-[2.222vw] mb-6 md:mb-[1.458vw] text-center md:text-left">
-            Welcome Back
-          </div>
-          <InputBox
-            label="MOBILE NO."
-            id="mobile_number"
-            name="mobile_number"
-            placeholder="Enter Mobile No."
-            value={mobileNumber}
-            onChange={handleChange}
-          />
-          <div className="w-full mt-4 md:mt-[1.806vw]">
-            {/* Show errors or success messages */}
-            {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
-            {success && (
-              <p className="text-green-500 text-sm mb-2">{success}</p>
-            )}
-            <div>
-              <BlueButton text={'SEND OTP'} onClick={handleSendOTP} />
-            </div>
-          </div>
-          <div className="text-gray-700 font-semibold text-sm md:text-[0.903vw] flex justify-center items-center mt-4 md:mt-[1.806vw]">
-            Register here, if not
-            <span
-              className="text-[#02A82B] cursor-pointer ml-1"
-              onClick={() => navigate('/signup')}
-            >
-              Sign up
-            </span>
-          </div>
+      <div className="w-1/2 flex flex-col justify-center items-center px-4 md:px-8 lg:px-12 relative">
+        <div className="w-full max-w-md lg:max-w-lg">
+          <FormSection />
         </div>
 
-        {/* Footer added at the bottom */}
-        <div className="absolute bottom-0 left-0 right-0 flex flex-col items-center mb-8">
-          <img src={centrixsymbol} alt="Centrix Symbol" className="w-20" />
-          <div className="text-[#A1A1A1] text-sm mt-4 font-normal">
-            Disclaimer | Privacy Policy | Terms Of Use
-          </div>
-        </div>
+        {/* Footer positioned at bottom */}
+        <Footer className="absolute bottom-0 left-0 right-0 mb-6" />
       </div>
     </div>
   );
@@ -181,5 +171,3 @@ export const Login = () => {
 };
 
 export default Login;
-
-

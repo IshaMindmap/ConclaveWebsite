@@ -8,6 +8,7 @@ import { centrixwhitelogo, robotbg } from '../assets';
 export const Otp = () => {
   const [isMobile, setIsMobile] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const [otp, setOtp] = useState(['', '', '', '']);
   const mobileNumber =
     location.state?.mobile_number ||
@@ -95,7 +96,6 @@ export const Otp = () => {
     }
   };
 
-
   // Detect if screen is mobile
   useEffect(() => {
     const checkIfMobile = () => {
@@ -112,139 +112,134 @@ export const Otp = () => {
     return () => window.removeEventListener('resize', checkIfMobile);
   }, []);
 
-  // Mobile design
-const MobileDesign = () => (
-  <div className="flex flex-col">
-    {/* Left Side with Background Image */}
-    <div
-      className="h-[40vh] p-6 pt-8 flex justify-start items-start"
-      style={{
-        backgroundImage: `url(${robotbg})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-      }}
-    >
-      <img src={centrixwhitelogo} alt="Centrix Logo" className="max-w-full" />
+  // Responsive OTP input component
+  const OtpInputs = () => (
+    <div className="flex justify-center items-center gap-2 sm:gap-4 mb-6">
+      {otp.map((digit, index) => (
+        <input
+          key={index}
+          ref={inputRefs[index]}
+          type="text"
+          maxLength="1"
+          value={digit}
+          onChange={(e) => handleChange(e, index)}
+          onKeyDown={(e) => handleKeyDown(e, index)}
+          onPaste={index === 0 ? handlePaste : null}
+          className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-16 text-center text-base sm:text-lg font-bold border-2 border-[#19213D] rounded-lg focus:outline-none focus:border-[#19213D] focus:ring-2 focus:ring-[#19213D] transition-all duration-150"
+        />
+      ))}
     </div>
+  );
 
-    {/* Right Side (OTP Form) */}
-    <div className=" h-[50vh] flex justify-center items-center">
-      <div className="w-full max-w-md text-center flex flex-col justify-center items-center h-full">
-        <h1 className="text-[#111478] font-bold font-mulish text-2xl sm:text-3xl mb-6">
-          Enter OTP
-        </h1>
+  // Mobile design with improved responsiveness
+  const MobileDesign = () => (
+    <div className="flex flex-col min-h-screen">
+      {/* Left Side with Background Image */}
+      <div
+        className="h-[40vh] sm:h-[35vh] p-4 sm:p-6 pt-6 sm:pt-8 flex justify-start items-start"
+        style={{
+          backgroundImage: `url(${robotbg})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      >
+        <img
+          src={centrixwhitelogo}
+          alt="Centrix Logo"
+          className="w-32 sm:w-40 max-w-full"
+        />
+      </div>
 
-        {/* OTP Inputs */}
-        <div className="flex justify-center items-center gap-2 sm:gap-4 mb-6">
-          {otp.map((digit, index) => (
-            <input
-              key={index}
-              ref={inputRefs[index]}
-              type="text"
-              maxLength="1"
-              value={digit}
-              onChange={(e) => handleChange(e, index)}
-              onKeyDown={(e) => handleKeyDown(e, index)}
-              onPaste={index === 0 ? handlePaste : null}
-              className="w-20 h-16  text-center text-lg font-bold border-2 border-[#19213D] rounded-lg focus:outline-none focus:border-[#19213D] focus:ring-2 focus:ring-[#19213D] transition-all duration-150"
-            />
-          ))}
-        </div>
+      {/* Right Side (OTP Form) */}
+      <div className="flex-1 flex justify-center items-center p-4 sm:p-6">
+        <div className="w-full max-w-md text-center flex flex-col justify-center items-center">
+          <h1 className="text-[#111478] font-bold font-mulish text-xl sm:text-2xl mb-4 sm:mb-6">
+            Enter OTP
+          </h1>
 
-        {/* Error/Success Messages */}
-        {error && (
-          <p className="text-red-500 text-sm sm:text-base mb-2">{error}</p>
-        )}
-        {success && (
-          <p className="text-green-600 text-sm sm:text-base mb-2">{success}</p>
-        )}
+          {/* OTP Inputs */}
+          <OtpInputs />
 
-        {/* Continue Button (Centered) */}
-        <div className="w-[85%] flex justify-center items-center">
-          <BlueButton text="CONTINUE" onClick={handleVerifyOTP} />
-        </div>
+          {/* Error/Success Messages */}
+          {error && (
+            <p className="text-red-500 text-xs sm:text-sm mb-2">{error}</p>
+          )}
+          {success && (
+            <p className="text-green-600 text-xs sm:text-sm mb-2">{success}</p>
+          )}
 
-        {/* Sign Up Link */}
-        <div className="text-gray-700 font-semibold text-sm mt-4">
-          Register here, if not
-          <span
-            className="text-[#02A82B] cursor-pointer ml-1"
-            onClick={() => navigate('/signup')}
-          >
-            Sign up
-          </span>
+          {/* Continue Button (Centered) */}
+          <div className="w-full sm:w-[85%] flex justify-center items-center">
+            <BlueButton text="CONTINUE" onClick={handleVerifyOTP} />
+          </div>
+
+          {/* Sign Up Link */}
+          <div className="text-gray-700 font-semibold text-xs sm:text-sm mt-3 sm:mt-4">
+            Register here, if not
+            <span
+              className="text-[#02A82B] cursor-pointer ml-1"
+              onClick={() => navigate('/signup')}
+            >
+              Sign up
+            </span>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-);
+  );
 
-  // Desktop design
-const DesktopDesign = () => (
-  <div className="flex h-screen">
-    {/* Left Side with Background Image */}
-    <div
-      className="w-1/2 p-12 flex justify-start items-start"
-      style={{
-        backgroundImage: `url(${robotbg})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-      }}
-    >
-      <img src={centrixwhitelogo} alt="Centrix Logo" className="max-w-full" />
-    </div>
+  // Desktop design with improved responsiveness
+  const DesktopDesign = () => (
+    <div className="flex h-screen">
+      {/* Left Side with Background Image */}
+      <div
+        className="w-5/12 lg:w-1/2 p-8 md:p-10 lg:p-12 flex justify-start items-start"
+        style={{
+          backgroundImage: `url(${robotbg})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      >
+        <img
+          src={centrixwhitelogo}
+          alt="Centrix Logo"
+          className="w-40 lg:w-48 max-w-full"
+        />
+      </div>
 
-    {/* Right Side (OTP Form) */}
-    <div className="w-1/2 flex justify-center items-center">
-      <div className="w-full max-w-md text-center flex flex-col justify-center items-center h-full">
-        <h1 className="text-[#111478] font-bold font-mulish text-2xl sm:text-3xl mb-6">
-          Enter OTP
-        </h1>
+      {/* Right Side (OTP Form) */}
+      <div className="w-7/12 lg:w-1/2 flex justify-center items-center p-6">
+        <div className="w-full max-w-md text-center flex flex-col justify-center items-center">
+          <h1 className="text-[#111478] font-bold font-mulish text-2xl md:text-3xl mb-6">
+            Enter OTP
+          </h1>
 
-        {/* OTP Inputs */}
-        <div className="flex justify-center items-center gap-2 sm:gap-4 mb-6">
-          {otp.map((digit, index) => (
-            <input
-              key={index}
-              ref={inputRefs[index]}
-              type="text"
-              maxLength="1"
-              value={digit}
-              onChange={(e) => handleChange(e, index)}
-              onKeyDown={(e) => handleKeyDown(e, index)}
-              onPaste={index === 0 ? handlePaste : null}
-              className="w-20 h-16  text-center text-lg font-bold border-2 border-[#19213D] rounded-lg focus:outline-none focus:border-[#19213D] focus:ring-2 focus:ring-[#19213D] transition-all duration-150"
-            />
-          ))}
-        </div>
+          {/* OTP Inputs */}
+          <OtpInputs />
 
-        {/* Error/Success Messages */}
-        {error && (
-          <p className="text-red-500 text-sm sm:text-base mb-2">{error}</p>
-        )}
-        {success && (
-          <p className="text-green-600 text-sm sm:text-base mb-2">{success}</p>
-        )}
+          {/* Error/Success Messages */}
+          {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
+          {success && <p className="text-green-600 text-sm mb-2">{success}</p>}
 
-        {/* Continue Button (Centered) */}
-        <div className="w-[85%] flex justify-center items-center">
-          <BlueButton text="CONTINUE" onClick={handleVerifyOTP} />
-        </div>
+          {/* Continue Button (Centered) */}
+          <div className="w-[85%] flex justify-center items-center">
+            <BlueButton text="CONTINUE" onClick={handleVerifyOTP} />
+          </div>
 
-        {/* Sign Up Link */}
-        <div className="text-gray-700 font-semibold text-sm mt-4">
-          Register here, if not
-          <span
-            className="text-[#02A82B] cursor-pointer ml-1"
-            onClick={() => navigate('/signup')}
-          >
-            Sign up
-          </span>
+          {/* Sign Up Link */}
+          <div className="text-gray-700 font-semibold text-sm mt-4">
+            Register here, if not
+            <span
+              className="text-[#02A82B] cursor-pointer ml-1"
+              onClick={() => navigate('/signup')}
+            >
+              Sign up
+            </span>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-);
+  );
 
   // Render different layouts based on screen size
   return isMobile ? <MobileDesign /> : <DesktopDesign />;
