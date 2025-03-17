@@ -28,6 +28,7 @@ const Main = () => {
   const [sessionUid, setSessionUid] = useState(null);
   const [socket, setSocket] = useState(null);
   const [recentSessions, setRecentSessions] = useState([]);
+  const [docscategory, setDocsCategory] = useState('1');
 
   const accessToken = localStorage.getItem('access_token');
   const category = String(localStorage.getItem('category')).toUpperCase();
@@ -262,11 +263,12 @@ const Main = () => {
     setMessages((prev) => [...prev, newMessage]);
 
     if (socket && socket.readyState === WebSocket.OPEN) {
+
       try {
         socket.send(
           JSON.stringify({
             user: userInput,
-            category: category.toLowerCase(),
+            category: docscategory,
             session_uid: sessionUid,
           })
         );
@@ -293,7 +295,7 @@ const Main = () => {
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault(); // Prevent default to avoid newline in textarea
+      e.preventDefault(); 
       handleSendClick();
     }
   };
@@ -591,14 +593,23 @@ const Main = () => {
           {showInputAtBottom && (
             <div className="mb-2">
               <div className="flex flex-wrap gap-2 mb-2">
-                <div className="flex p-2 py-1 text-white bg-[#19213D] rounded-full text-xs">
+                <div 
+                  className={`flex p-2 py-1 ${(docscategory=='1')?'text-white bg-[#19213D]' :'text-[#313131] bg-white'} border  border-[#C6C6C6] rounded-full text-xs cursor-pointer`}
+                  onClick={()=>setDocsCategory('1')}
+                >
                   • MedAsk
                 </div>
-                <div className="flex p-2 py-1 text-[#313131] border border-[#C6C6C6] rounded-full text-xs">
+                <div 
+                  className={`flex p-2 py-1 ${(docscategory=='2')?'text-white bg-[#19213D]' :'text-[#313131] bg-white'}  border  border-[#C6C6C6] rounded-full text-xs cursor-pointer`}
+                  onClick={()=>setDocsCategory('2')}
+                >
                   • Pubmed
                 </div>
-                <div className="flex p-2 py-1 text-[#313131] border border-[#C6C6C6] rounded-full text-xs">
-                  • Upload
+                <div 
+                  className={`flex p-2 py-1 ${(docscategory=='3')?'text-white bg-[#19213D]' :'text-[#313131] bg-white'} border border-[#C6C6C6] rounded-full text-xs cursor-pointer`}
+                  onClick={()=>setDocsCategory('3')}
+                >
+                  • Open Source
                 </div>
               </div>
               <div className="relative w-full">
@@ -769,14 +780,23 @@ const Main = () => {
           {showInputAtBottom && (
             <div className="flex flex-col mt-4 mb-4">
               <div className="flex flex-wrap gap-2 mb-2">
-                <div className="flex p-4 py-2 text-white bg-[#19213D] rounded-full">
+                <div
+                 className={`flex p-4 py-2 ${(docscategory=='1')?'text-white bg-[#19213D]' :'text-[#313131] bg-white'} border border-[#C6C6C6] rounded-full cursor-pointer`}
+                 onClick={()=>setDocsCategory('1')}
+                >
                   • MedAsk
                 </div>
-                <div className="flex p-4 py-2 text-[#313131] border border-[#C6C6C6] rounded-full">
+                <div 
+                  className={`flex p-4 py-2 ${(docscategory=='2')?'text-white bg-[#19213D]' :'text-[#313131] bg-white'} border border-[#C6C6C6] rounded-full cursor-pointer`}
+                  onClick={()=>setDocsCategory('2')}
+                >
                   • Pubmed
                 </div>
-                <div className="flex p-4 py-2 text-[#313131] border border-[#C6C6C6] rounded-full">
-                  • Upload
+                <div 
+                  className={`flex p-4 py-2 ${(docscategory=='3')?'text-white bg-[#19213D]' :'text-[#313131] bg-white'} border border-[#C6C6C6] rounded-full cursor-pointer`}
+                  onClick={()=>setDocsCategory('3')}
+                >
+                  • Open Source
                 </div>
               </div>
               <div className="relative p-2 w-full">
