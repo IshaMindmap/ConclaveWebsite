@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect ,useCallback} from 'react';
 import axios from 'axios';
 import InputBox from '../components/InputBox';
 import { BlueButton } from '../components/Buttons';
@@ -10,25 +10,18 @@ export const Signup = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [isMobile, setIsMobile] = useState(false);
-  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(1);
+  const [firstname , setFirstName] = useState('')
+  const [lastname , setLastName] = useState('')
+  const [email , setEmail] = useState('')
+  const [mobile , setMobile] = useState('')
+  const [country , setCountry] = useState('')
+  const [city , setCity] = useState('')
+  const [profession , setProfession] = useState('')
 
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    mobile_number: '',
-    country: '',
-    city: '',
-    qualification: '',
-  });
-
-  // Combined name for API request
+  
   const getFullName = () => {
-    return `${formData.firstName} ${formData.lastName}`.trim();
-  };
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    return `${firstname} ${lastname}`.trim();
   };
 
   const handleSubmit = async (e) => {
@@ -38,10 +31,12 @@ export const Signup = () => {
 
     // Form validation
     if (
-      !formData.firstName ||
-      !formData.email ||
-      !formData.mobile_number ||
-      !formData.qualification
+      !firstname ||
+      !email ||
+      !mobile ||
+      !country ||
+      !profession 
+
     ) {
       setError('Required fields must be filled!');
       return;
@@ -56,10 +51,15 @@ export const Signup = () => {
       const backendUrl = import.meta.env.VITE_API_URL;
       // Prepare data for API - use the combined name
       const apiFormData = {
-        name: getFullName(),
-        email: formData.email,
-        mobile_number: formData.mobile_number,
-        qualification: formData.qualification,
+        first_name: firstname,
+        last_name: lastname,
+        profession: profession,
+        country: country,
+        city: city,
+        email: email,
+        mobile_number: mobile,
+        tc:acceptedTerms
+        
         // You can add country and city here if your API supports them
       };
 
@@ -71,9 +71,9 @@ export const Signup = () => {
       if (response.status === 200) {
         setSuccess('Signup successful! Redirecting...');
         setTimeout(() => {
-          sessionStorage.setItem('mobile_number', formData.mobile_number);
+          sessionStorage.setItem('mobile_number', mobile);
           navigate('/otp', {
-            state: { mobile_number: formData.mobile_number },
+            state: { mobile_number: mobile },
           });
         }, 2000);
       }
@@ -83,6 +83,14 @@ export const Signup = () => {
         setError(err.response?.data?.errors?.errors?.mobile_number);
       } else if (err.response?.data?.errors?.errors?.email) {
         setError(err.response?.data?.errors?.errors?.email);
+      }else if (err.response?.data?.errors?.errors?.profession) {
+        setError(err.response?.data?.errors?.errors?.profession);
+      }else if (err.response?.data?.errors?.errors?.country) {
+        setError(err.response?.data?.errors?.errors?.country);
+      }else if (err.response?.data?.errors?.errors?.city) {
+          setError(err.response?.data?.errors?.errors?.city);
+      }else if (err.response?.data?.errors?.errors?.tc) {
+        setError(err.response?.data?.errors?.errors?.tc);
       } else {
         setError(err.response?.data?.message || 'Signup failed. Try again.');
       }
@@ -115,53 +123,53 @@ export const Signup = () => {
               label="First Name"
               name="firstName"
               placeholder="Enter first name"
-              value={formData.firstName}
-              onChange={handleChange}
+              value={firstname}
+              onChange={(e) => setFirstName(e.target.value)}
             />
             <InputBox
               label="Last Name"
               name="lastName"
               placeholder="Enter last name"
-              value={formData.lastName}
-              onChange={handleChange}
+              value={lastname}
+              onChange={(e) => setLastName(e.target.value)}
             />
           </div>
           <InputBox
             label="Email"
             name="email"
             placeholder="Enter Email"
-            value={formData.email}
-            onChange={handleChange}
+            value={email}
+            onChange={(e)=>setEmail(e.target.value)}
           />
           <InputBox
             label="Mobile No."
             name="mobile_number"
             placeholder="Enter Mobile No."
-            value={formData.mobile_number}
-            onChange={handleChange}
+            value={mobile}
+            onChange={(e)=>setMobile(e.target.value)}
           />
           <div className="flex flex-col gap-3">
             <InputBox
               label="Country"
               name="country"
               placeholder="Select Country"
-              value={formData.country}
-              onChange={handleChange}
+              value={country}
+              onChange={(e)=>setCountry(e.target.value)}
             />
             <InputBox
               label="City"
               name="city"
               placeholder="Select City"
-              value={formData.city}
-              onChange={handleChange}
+              value={city}
+              onChange={(e)=>setCity(e.target.value)}
             />
           </div>
           <InputBox
             label="Profession"
-            name="qualification"
+            name="profession"
             placeholder="Enter profession"
-            value={formData.qualification}
-            onChange={handleChange}
+            value={profession}
+            onChange={(e)=>setProfession(e.target.value)}
           />
         </div>
       );
@@ -173,53 +181,53 @@ export const Signup = () => {
               label="First Name"
               name="firstName"
               placeholder="Enter first name"
-              value={formData.firstName}
-              onChange={handleChange}
+              value={firstname}
+              onChange={(e) => setFirstName(e.target.value)}
             />
             <InputBox
               label="Last Name"
               name="lastName"
               placeholder="Enter last name"
-              value={formData.lastName}
-              onChange={handleChange}
+              value={lastname}
+              onChange={(e) => setLastName(e.target.value)}
             />
           </div>
           <InputBox
             label="Email"
             name="email"
             placeholder="Enter Email"
-            value={formData.email}
-            onChange={handleChange}
+            value={email}
+            onChange={(e)=>setEmail(e.target.value)}
           />
           <InputBox
             label="Mobile No."
             name="mobile_number"
             placeholder="Enter Mobile No."
-            value={formData.mobile_number}
-            onChange={handleChange}
+            value={mobile}
+            onChange={(e)=>setMobile(e.target.value)}
           />
           <div className="flex gap-4">
             <InputBox
               label="Country"
               name="country"
               placeholder="Select Country"
-              value={formData.country}
-              onChange={handleChange}
+              value={country}
+              onChange={(e)=>setCountry(e.target.value)}
             />
             <InputBox
               label="City"
               name="city"
               placeholder="Select City"
-              value={formData.city}
-              onChange={handleChange}
+              value={city}
+              onChange={(e)=>setCity(e.target.value)}
             />
           </div>
           <InputBox
             label="Profession"
-            name="qualification"
+            name="profession"
             placeholder="Enter Profession"
-            value={formData.qualification}
-            onChange={handleChange}
+            value={profession}
+            onChange={(e)=>setProfession(e.target.value)}
           />
           <label className="flex items-center space-x-2 cursor-pointer">
             <input
