@@ -8,23 +8,28 @@ const InputBox = ({
   value,
   placeholder,
   onChange,
+  required = false,
 }) => {
+  // Ensure id is available for label association
+  const inputId = id || name;
+
   return (
     <div className="relative w-full">
       {/* Input Field */}
       <input
-        id={id}
+        id={inputId}
         name={name}
         type={type}
         value={value}
         onChange={onChange}
         className="peer w-full px-4 py-3 md:px-[1.285vw] md:py-[1.111vw] border border-[#19213D] rounded-lg text-[#19213D] placeholder:text-[#C6C6C6]"
         placeholder={placeholder}
+        required={required}
       />
 
       <label
-        htmlFor={id}
-        className="absolute left-0 -top-2 text-[14px] text-[#19213D] bg-white px-1 peer-focus:text-[#424242]"
+        htmlFor={inputId}
+        className="absolute left-2 -top-2 text-[14px] text-[#19213D] bg-white px-1 peer-focus:text-[#424242]"
       >
         {label}
       </label>
