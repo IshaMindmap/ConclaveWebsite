@@ -469,6 +469,7 @@ const Main = () => {
             <div className="relative w-full">
               <input
                 type="text"
+                id="Input1"
                 placeholder="Ask Me"
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900"
                 value={userInput}
@@ -539,6 +540,7 @@ const Main = () => {
               <div className="relative w-full">
                 <input
                   type="text"
+                  id="Input2"
                   placeholder="Ask Me"
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 text-sm"
                   value={userInput}
@@ -678,6 +680,7 @@ const Main = () => {
             <div className="relative p-2 w-full">
               <input
                 type="text"
+                id="Input3"
                 placeholder="Ask Me"
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900"
                 value={userInput}
@@ -747,6 +750,7 @@ const Main = () => {
               <div className="relative p-2 w-full">
                 <input
                   type="text"
+                  id="Input4"
                   placeholder="Ask Me"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900"
                   value={userInput}

@@ -20,13 +20,31 @@ export const Features = () => {
   const navigate = useNavigate();
   const [isMobile, setIsMobile] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [selected, setSelected] = useState(null);
+  const specialties = ['Cardiology', 'Diabetology', 'Respiratory'];
+  const [activetab , setActiveTab] = useState(0)
 
-  const handleClick = () => {
-    console.log('Button clicked!');
-    // Add any additional logic here
-  };
+  const handleCategory= (index) =>{
+  
+    if(specialties[index]){
+      let category = specialties[index]
+      category= String(category).toLowerCase()
+      localStorage.setItem("category", category);
+      localStorage.setItem("activetab", index);
+      navigate('/main')
+    }
+  }
 
-  // Detect if screen is mobile and track window width for more fluid responsiveness
+
+  useEffect(() => {
+    let tab = localStorage.getItem("activetab");
+    if(tab!='null'){
+      setActiveTab(tab)
+    }
+    
+  }, []);
+
+
   useEffect(() => {
     const handleResize = () => {
       const width = window.innerWidth;
@@ -79,20 +97,26 @@ export const Features = () => {
           {/* Areas of Interest Card */}
           <div className="font-mulish w-full max-w-md p-4 sm:p-6 bg-white text-left rounded-lg mt-28">
             <div className="text-lg sm:text-xl text-[#111478] italic font-bold mb-4 sm:mb-6">
-              Select Area Of Interest
+              Select Area Of Interest 
             </div>
+            {specialties.map((specialty, index) => (
+              <div
+                key={index} 
+                className={`mt-3 cursor-pointer sm:mt-4 text-sm sm:text-base flex justify-center items-center p-3 sm:p-4 rounded-lg border-[#19213D] border-[1px] ${(activetab==index)?'bg-[#19213D] text-white':'text-[#19213D] border-[#19213D] bg-white'} italic font-bold mb-3 sm:mb-4`}
+                onClick={() => handleCategory(index)}
+              >
+                {specialty}
+              </div>
+            ))}
 
-            <div className="mt-3 sm:mt-4 text-sm sm:text-base flex justify-center items-center p-3 sm:p-4 rounded-lg bg-[#19213D] text-white italic font-bold mb-3 sm:mb-4">
-              Cardiology
-            </div>
-
-            <div className="text-sm sm:text-base flex justify-center items-center p-3 sm:p-4 rounded-lg border border-[#19213D] bg-white text-[#19213D] italic font-bold mb-3 sm:mb-4">
+            {/* <div className="text-sm cursor-pointer sm:text-base flex justify-center items-center p-3 sm:p-4 rounded-lg border border-[#19213D] bg-white text-[#19213D] italic font-bold mb-3 sm:mb-4">
               Diabetology
             </div>
 
-            <div className="text-sm sm:text-base flex justify-center items-center p-3 sm:p-4 rounded-lg border border-[#19213D] bg-white text-[#19213D] italic font-bold mb-3 sm:mb-4">
+            <div className="text-sm cursor-pointer sm:text-base flex justify-center items-center p-3 sm:p-4 rounded-lg border border-[#19213D] bg-white text-[#19213D] italic font-bold mb-3 sm:mb-4">
               Respiratory
-            </div>
+            </div> */}
+
           </div>
 
           {/* Footer */}
@@ -144,15 +168,17 @@ export const Features = () => {
             <div className="text-lg md:text-xl lg:text-2xl text-[#111478] italic font-bold mb-4">
               Select Area Of Interest
             </div>
-            <div className="mt-6 md:mt-8 text-base md:text-lg lg:text-xl flex justify-center items-center p-4 md:p-6 rounded-lg md:rounded-xl bg-[#19213D] text-white italic font-bold mb-4">
-              Cardiology
-            </div>
-            <div className="text-base md:text-lg lg:text-xl flex justify-center items-center p-4 md:p-6 rounded-lg md:rounded-xl border border-[#19213D] bg-white text-[#19213D] italic font-bold mb-4">
-              Diabetology
-            </div>
-            <div className="text-base md:text-lg lg:text-xl flex justify-center items-center p-4 md:p-6 rounded-lg md:rounded-xl border border-[#19213D] bg-white text-[#19213D] italic font-bold mb-4">
-              Respiratory
-            </div>
+            {specialties.map((specialty, index) => (
+              <div 
+                key={index} 
+                className={`mt-6 cursor-pointer md:mt-8 text-base md:text-lg lg:text-xl flex justify-center items-center p-4 md:p-6 rounded-lg md:rounded-xl border-[#19213D] border-[1px] ${(activetab==index)?'bg-[#19213D]   text-white':'text-[#19213D] border-[#19213D] bg-white'} italic font-bold mb-4`}
+                onClick={() => handleCategory(index)}
+              >
+                {specialty}
+              </div>
+            ))}
+
+
           </div>
           <div className="mt-16 md:mt-20 lg:mt-28 flex flex-col items-center">
             <div className="text-[#313131] bg-white rounded-full p-2 text-xs md:text-sm mt-3 md:mt-4 font-normal">

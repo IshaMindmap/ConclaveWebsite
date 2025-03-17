@@ -165,7 +165,7 @@ export const Otp = () => {
             <p className="text-red-500 text-xs sm:text-sm mb-2">{error}</p>
           )}
           {success && (
-            <p className="text-green-600 text-xs sm:text-sm mb-2">{success}</p>
+            <p className="text-green text-xs sm:text-sm mb-2">{success}</p>
           )}
 
           {/* Continue Button (Centered) */}
@@ -219,7 +219,7 @@ export const Otp = () => {
 
           {/* Error/Success Messages */}
           {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
-          {success && <p className="text-green-600 text-sm mb-2">{success}</p>}
+          {success && <p className="text-green text-sm mb-2">{success}</p>}
 
           {/* Continue Button (Centered) */}
           <div className="w-[85%] flex justify-center items-center">

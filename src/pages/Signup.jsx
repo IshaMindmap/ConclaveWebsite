@@ -49,10 +49,13 @@ export const Signup = () => {
         tc: acceptedTerms ? 1 : 0,
       };
 
+
       const response = await axios.post(
-        `${backendUrl}/api/v1/auth/register/`,
+        `${backendUrl}api/v1/auth/register/`,
         apiFormData
       );
+
+      
 
       if (response.status === 200) {
         setSuccess('Signup successful! Redirecting...');
@@ -310,11 +313,11 @@ export const Signup = () => {
 
                 {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
                 {success && (
-                  <p className="text-green-600 text-sm mt-2">{success}</p>
+                  <p className="text-green text-sm mt-2">{success}</p>
                 )}
 
                 <div className="w-full mt-6">
-                  <BlueButton type="submit" text="SEND OTP" />
+                  <BlueButton type="submit" text="SEND OTP" onClick={handleSubmit} />
                 </div>
               </form>
 
