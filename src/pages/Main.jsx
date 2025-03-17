@@ -36,40 +36,54 @@ const Main = () => {
   const renderer = new marked.Renderer();
 
   // ===== CONVERT MARKDOWN TO HTML =====
-
   renderer.link = (href, title, text) => {
-    console.log('href:', href, 'title:', title, 'text:', text);
-
     const safeHref = typeof href === 'object' ? href.href : href;
     const safeTitle = title ? ` title="${title}"` : '';
     const safeText = text || safeHref;
     return `<a href="${safeHref}"${safeTitle} target="_blank" rel="noopener noreferrer">${safeText}</a>`;
   };
+
   marked.setOptions({
-    breaks: true, // ✅ Enables line breaks
-    gfm: true, // ✅ Enables GitHub Flavored Markdown
-    headerIds: true, // ✅ Disables automatic header IDs
-    langPrefix: 'language-', // ✅ Helps with syntax highlighting
-    renderer: renderer, // ✅ Use custom renderer
+    breaks: true,
+    gfm: true,
+    headerIds: true,
+    langPrefix: 'language-',
+    renderer: renderer,
   });
 
   const renderMessage = (text) => {
-    if (!text) return { __html: '' }; // ✅ Prevent errors with empty input
-    return { __html: marked.parse(text) }; // ✅ Returns correct format for React
+    if (!text) return { __html: '' };
+    // Use DOMPurify to sanitize HTML before setting it
+    return { __html: DOMPurify.sanitize(marked.parse(text)) };
   };
 
   const handleSessionClick = (uid) => {
+    if (uid === sessionUid) return; // Don't reload if it's the same session
+
     setMessages([]);
+    setCurrentAssistantMessage('');
+    currentMessageRef.current = '';
     setSessionUid(uid);
     localStorage.setItem('session_uid', uid);
-    setSocket(
-      new WebSocket(`${socketUrl}ws/chat/${uid}/?token=${accessToken}`)
+
+    if (socket) {
+      socket.close();
+    }
+
+    const newSocket = new WebSocket(
+      `${socketUrl}ws/chat/${uid}/?token=${accessToken}`
     );
+    setSocket(newSocket);
   };
 
   // ========= GET AND CREATE ACTIVE SESSION ========
   useEffect(() => {
     const fetchSession = async () => {
+      if (!accessToken || !category) {
+        console.error('Missing access token or category');
+        return;
+      }
+
       try {
         const response = await axios.post(
           `${backendUrl}api/v1/docs/get-or-create-session/`,
@@ -81,20 +95,27 @@ const Main = () => {
             },
           }
         );
+
         const sessionId = response.data?.session_id;
-        setSessionUid(sessionId);
-        localStorage.setItem('session_uid', sessionId);
+        if (sessionId) {
+          setSessionUid(sessionId);
+          localStorage.setItem('session_uid', sessionId);
+        } else {
+          console.error('No session ID returned from API');
+        }
       } catch (error) {
         console.error('Error fetching session:', error);
       }
     };
 
-    fetchSession();
-  }, []);
+    if (accessToken && category) {
+      fetchSession();
+    }
+  }, [accessToken, category, backendUrl]);
 
   // ======= FETCH CHAT HISTORY AFTER SESSION ID EXISTS =======
   useEffect(() => {
-    if (!sessionUid) return;
+    if (!sessionUid || !accessToken) return;
 
     const fetchChatHistory = async () => {
       try {
@@ -108,47 +129,54 @@ const Main = () => {
           }
         );
 
-        const chatHistory = response.data.info.flatMap((chat) =>
-          chat.messages
-            .filter((msg) => msg.role !== 'system')
-            .map((msg) => ({
-              text: msg.content,
-              isUser: msg.role === 'user',
-            }))
-        );
+        if (response.data && response.data.info) {
+          const chatHistory = response.data.info.flatMap((chat) =>
+            (chat.messages || [])
+              .filter((msg) => msg.role !== 'system')
+              .map((msg) => ({
+                text: msg.content,
+                isUser: msg.role === 'user',
+              }))
+          );
 
-        // ✅ Prevent duplicate messages by checking previous state
-        setMessages((prevMessages) => {
-          const mergedMessages = [...prevMessages];
+          // ✅ Prevent duplicate messages by checking previous state
+          setMessages((prevMessages) => {
+            const mergedMessages = [...prevMessages];
 
-          chatHistory.forEach((newMsg) => {
-            // Check if the message already exists before adding
-            if (
-              !mergedMessages.some(
-                (msg) =>
-                  msg.text === newMsg.text && msg.isUser === newMsg.isUser
-              )
-            ) {
-              mergedMessages.push(newMsg);
+            chatHistory.forEach((newMsg) => {
+              // Check if the message already exists before adding
+              if (
+                !mergedMessages.some(
+                  (msg) =>
+                    msg.text === newMsg.text && msg.isUser === newMsg.isUser
+                )
+              ) {
+                mergedMessages.push(newMsg);
+              }
+            });
+
+            // If we have messages, show the input at bottom
+            if (mergedMessages.length > 0) {
+              setShowInputAtBottom(true);
             }
-          });
 
-          return mergedMessages;
-        });
+            return mergedMessages;
+          });
+        }
       } catch (error) {
         console.error('Error fetching chat history:', error);
       }
     };
 
     fetchChatHistory();
-  }, [sessionUid]);
+  }, [sessionUid, accessToken, backendUrl]);
 
   // =======   WEBSOCKET CONFIGURATION  ========
   useEffect(() => {
-    if (!sessionUid) return;
+    if (!sessionUid || !accessToken) return;
 
-    let isConnected = false; // Track WebSocket connection status
-    let reconnectTimeout = null; // Store reconnection timeout
+    let isComponentMounted = true;
+    let reconnectTimeout = null;
 
     // Close existing WebSocket before creating a new one
     if (socket) {
@@ -161,29 +189,38 @@ const Main = () => {
 
     ws.onopen = () => {
       console.log('✅ WebSocket Connected to session:', sessionUid);
-      isConnected = true;
-      setSocket(ws);
+      if (isComponentMounted) {
+        setSocket(ws);
+      }
     };
 
     ws.onmessage = (event) => {
-      console.log('📩 Received Message:', event.data);
-      const receivedMessage = JSON.parse(event.data);
+      if (!isComponentMounted) return;
 
-      if (receivedMessage.status === 'start') {
-        currentMessageRef.current = receivedMessage.assistant;
-        setCurrentAssistantMessage(currentMessageRef.current);
-      } else if (receivedMessage.status === 'generating') {
-        currentMessageRef.current += receivedMessage.assistant;
-        setCurrentAssistantMessage(currentMessageRef.current);
-      } else if (receivedMessage.status === 'end') {
-        setMessages((prev) => [
-          ...prev,
-          {
-            text: currentMessageRef.current + receivedMessage.assistant,
-            isUser: false,
-          },
-        ]);
-        setCurrentAssistantMessage('');
+      try {
+        const receivedMessage = JSON.parse(event.data);
+
+        if (receivedMessage.status === 'start') {
+          currentMessageRef.current = receivedMessage.assistant || '';
+          setCurrentAssistantMessage(currentMessageRef.current);
+        } else if (receivedMessage.status === 'generating') {
+          currentMessageRef.current += receivedMessage.assistant || '';
+          setCurrentAssistantMessage(currentMessageRef.current);
+        } else if (receivedMessage.status === 'end') {
+          const finalMessage =
+            currentMessageRef.current + (receivedMessage.assistant || '');
+          setMessages((prev) => [
+            ...prev,
+            {
+              text: finalMessage,
+              isUser: false,
+            },
+          ]);
+          currentMessageRef.current = '';
+          setCurrentAssistantMessage('');
+        }
+      } catch (error) {
+        console.error('Error parsing message:', error, event.data);
       }
     };
 
@@ -191,54 +228,60 @@ const Main = () => {
       console.error('WebSocket Error:', error);
     };
 
-    ws.onclose = () => {
-      console.log('❌ WebSocket Disconnected.');
+    ws.onclose = (event) => {
+      console.log('❌ WebSocket Disconnected.', event.code, event.reason);
 
-      if (!isConnected) return;
-
-      // Attempt to reconnect after 5 seconds
-      reconnectTimeout = setTimeout(() => {
-        console.log('♻️ Attempting WebSocket Reconnection...');
-        setSocket(
-          new WebSocket(
-            `${socketUrl}ws/chat/${sessionUid}/?token=${accessToken}`
-          )
-        );
-      }, 5000);
+      // Only attempt to reconnect if component is still mounted
+      if (isComponentMounted) {
+        // Attempt to reconnect after 5 seconds
+        reconnectTimeout = setTimeout(() => {
+          console.log('♻️ Attempting WebSocket Reconnection...');
+          if (isComponentMounted) {
+            setSocket(
+              new WebSocket(
+                `${socketUrl}ws/chat/${sessionUid}/?token=${accessToken}`
+              )
+            );
+          }
+        }, 5000);
+      }
     };
 
     return () => {
-      console.log('🛑 Cleaning up WebSocket for session:', sessionUid);
-      isConnected = false;
+      isComponentMounted = false;
       ws.close();
       if (reconnectTimeout) clearTimeout(reconnectTimeout);
     };
-  }, [sessionUid]);
+  }, [sessionUid, accessToken, socketUrl]);
 
   // =======   MESSAGE HANDLING  ========
   const handleSendClick = () => {
-    if (userInput.trim()) {
-      
-      const newMessage = { text: userInput, isUser: true };
-      setMessages([...messages, newMessage]);
+    if (!userInput.trim()) return;
 
-      if (socket && socket.readyState === WebSocket.OPEN) {
+    const newMessage = { text: userInput, isUser: true };
+    setMessages((prev) => [...prev, newMessage]);
+
+    if (socket && socket.readyState === WebSocket.OPEN) {
+      try {
         socket.send(
           JSON.stringify({
             user: userInput,
-            category: '1',
+            category: category.toLowerCase(),
             session_uid: sessionUid,
           })
         );
-
-        socket.onerror = (error) => {
-          console.error('WebSocket Error:', error);
-        };
+      } catch (error) {
+        console.error('Error sending message:', error);
       }
-
-      setUserInput('');
-      setShowInputAtBottom(true);
+    } else {
+      console.error(
+        'WebSocket not ready:',
+        socket ? socket.readyState : 'socket is null'
+      );
     }
+
+    setUserInput('');
+    setShowInputAtBottom(true);
   };
 
   // ==== SCROLL AUTO IN BOTTOM =====
@@ -246,14 +289,19 @@ const Main = () => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
     }
-  }, [messages, currentAssistantMessage]); // Runs whenever messages update
+  }, [messages, currentAssistantMessage]);
 
   const handleKeyPress = (e) => {
-    if (e.key === 'Enter') handleSendClick();
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault(); // Prevent default to avoid newline in textarea
+      handleSendClick();
+    }
   };
 
   // ======== RECENT ACTIVITIES LIST ========
   useEffect(() => {
+    if (!accessToken || !category) return;
+
     const fetchRecentActivity = async () => {
       try {
         const response = await axios.get(
@@ -268,17 +316,22 @@ const Main = () => {
           }
         );
 
-        setRecentSessions(response.data);
+        setRecentSessions(response.data || { info: [] });
       } catch (error) {
         console.error('Error fetching recent activity:', error);
       }
     };
 
     fetchRecentActivity();
-  }, [sessionUid]);
+  }, [sessionUid, accessToken, category, backendUrl]);
 
   // ========== NEW CHAT ==========
   const handleNewChat = async () => {
+    if (!accessToken || !category) {
+      console.error('Missing access token or category');
+      return;
+    }
+
     try {
       const response = await axios.post(
         `${backendUrl}api/v1/docs/sessions/`,
@@ -297,11 +350,18 @@ const Main = () => {
       if (response.data.status) {
         const newSessionUid = response.data.active_session_uid;
         setMessages([]);
+        setCurrentAssistantMessage('');
+        currentMessageRef.current = '';
+
         if (socket) {
           socket.close();
         }
+
         setSessionUid(newSessionUid);
         localStorage.setItem('session_uid', newSessionUid);
+
+        // Show input at top for new chats
+        setShowInputAtBottom(false);
       }
     } catch (error) {
       console.error('Error creating new session:', error);
@@ -310,7 +370,7 @@ const Main = () => {
 
   // =========== CLEAR ALL CHATS ========
   const handleClearChat = async () => {
-    if (!sessionUid) return;
+    if (!sessionUid || !accessToken) return;
 
     try {
       const response = await axios.delete(
@@ -326,6 +386,7 @@ const Main = () => {
       if (response.status === 200) {
         console.log('✅ Chat history cleared');
         setMessages([]);
+        setShowInputAtBottom(false);
       }
     } catch (error) {
       console.error('❌ Error clearing chat history:', error);
@@ -348,8 +409,7 @@ const Main = () => {
     return () => window.removeEventListener('resize', checkIfMobile);
   }, []);
 
-  // Updated Mobile Design with improved responsiveness
-  const MobileDesign = () => (
+  return isMobile ? (
     <div className="flex flex-col h-screen w-full">
       {/* Sidebar overlay - shown only when sidebar is open */}
       {isSidebarOpen && (
@@ -396,7 +456,7 @@ const Main = () => {
                 key={index}
                 onClick={() => handleSessionClick(session.uid)}
                 className={`text-[#111478] text-sm mb-3 cursor-pointer ${
-                  sessionUid == session.uid ? 'font-bold' : ''
+                  sessionUid === session.uid ? 'font-bold' : ''
                 }`}
               >
                 {session.title || 'Untitled Session'}
@@ -474,7 +534,7 @@ const Main = () => {
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900"
                 value={userInput}
                 onChange={(e) => setUserInput(e.target.value)}
-                onKeyPress={handleKeyPress}
+                onKeyDown={handleKeyPress}
               />
               <button
                 className="absolute right-3 top-1/2 transform -translate-y-1/2"
@@ -504,7 +564,10 @@ const Main = () => {
                           : 'bg-white text-[#19213D] drop-shadow-sm border-l-4 border-[#19213D] w-fit max-w-[80%] text-sm p-3'
                       }`}
                     >
-                      <div dangerouslySetInnerHTML={renderMessage(msg.text)} />
+                      <div
+                        className="message-content"
+                        dangerouslySetInnerHTML={renderMessage(msg.text)}
+                      />
                     </div>
                   </div>
                 ))}
@@ -515,6 +578,7 @@ const Main = () => {
             {currentAssistantMessage && (
               <div className="rounded-lg bg-white text-[#19213D] drop-shadow-sm border-l-4 border-[#19213D] w-fit max-w-[80%] text-sm p-3">
                 <div
+                  className="message-content"
                   dangerouslySetInnerHTML={renderMessage(
                     currentAssistantMessage
                   )}
@@ -545,7 +609,7 @@ const Main = () => {
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 text-sm"
                   value={userInput}
                   onChange={(e) => setUserInput(e.target.value)}
-                  onKeyPress={handleKeyPress}
+                  onKeyDown={handleKeyPress}
                 />
                 <button
                   className="absolute right-3 top-1/2 transform -translate-y-1/2"
@@ -572,10 +636,7 @@ const Main = () => {
         </div>
       </div>
     </div>
-  );
-
-  // Desktop design with improved responsive units
-  const DesktopDesign = () => (
+  ) : (
     <div className="flex gap-4">
       {/* Left sidebar */}
       <div className="h-[85vh] ms-4 w-1/5 border border-gray-300 bg-white pt-8 p-6 font-mulish rounded-2xl">
@@ -588,36 +649,12 @@ const Main = () => {
             <p className="text-[#111478] text-base mb-3">
               Here is some prompts for you.....
             </p>
-            <p className="text-[#111478] text-base mb-3">
-              Here is some prompts for you.....
-            </p>
-            <p className="text-[#111478] text-base mb-3">
-              Here is some prompts for you.....
-            </p>
-            <p className="text-[#111478] text-base mb-3">
-              Here is some prompts for you.....
-            </p>
-            <p className="text-[#111478] text-base mb-3">
-              Here is some prompts for you.....
-            </p>
-            <p className="text-[#111478] text-base mb-3">
-              Here is some prompts for you.....
-            </p>
-            <p className="text-[#111478] text-base mb-3">
-              Here is some prompts for you.....
-            </p>
-            <p className="text-[#111478] text-base mb-3">
-              Here is some prompts for you.....
-            </p>
-            <p className="text-[#111478] text-base mb-3">
-              Here is some prompts for you.....
-            </p>
-            <p className="text-[#111478] text-base mb-3">
-              Here is some prompts for you.....
-            </p>
-            <p className="text-[#111478] text-base mb-3">
-              Here is some prompts for you.....
-            </p>
+            {/* Repeated content simplified for clarity */}
+            {[...Array(10)].map((_, index) => (
+              <p key={index} className="text-[#111478] text-base mb-3">
+                Here is some prompts for you.....
+              </p>
+            ))}
           </div>
         </div>
 
@@ -631,7 +668,7 @@ const Main = () => {
                 key={index}
                 onClick={() => handleSessionClick(session.uid)}
                 className={`text-[#111478] text-base mb-3 cursor-pointer ${
-                  sessionUid == session.uid ? 'font-bold' : ''
+                  sessionUid === session.uid ? 'font-bold' : ''
                 }`}
               >
                 {session.title || 'Untitled Session'}
@@ -653,22 +690,13 @@ const Main = () => {
           <div className="font-mulish flex justify-center items-center text-white font-bold text-xl mb-5">
             Welcome to the world of {category}
           </div>
-          {/* <div className="flex gap-2">
-            <div
-              onClick={handleClearChat}
-              className="text-[#313131] bg-white px-4 py-2 rounded-full cursor-pointer"
-            >
-              Clear Chat
-            </div>
-            <div
-              onClick={handleNewChat}
-              className="text-[#313131] bg-white px-4 py-2 rounded-full cursor-pointer"
-            >
-              New Chat
-            </div>
-          </div> */}
           <div className="flex gap-2 mr-4">
-            <img src={newimg} alt="New" className="cursor-pointer" />
+            <img
+              src={newimg}
+              alt="New"
+              className="cursor-pointer"
+              onClick={handleNewChat}
+            />
             <img src={text} alt="Text" className="cursor-pointer" />
             <img src={upload} alt="Upload" className="cursor-pointer" />
           </div>
@@ -685,15 +713,15 @@ const Main = () => {
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900"
                 value={userInput}
                 onChange={(e) => setUserInput(e.target.value)}
-                onKeyPress={handleKeyPress}
+                onKeyDown={handleKeyPress}
               />
-              <img
-                src={sendicon}
+              <button
                 className="absolute right-4 bottom-3 cursor-pointer"
                 onClick={handleSendClick}
-              />
+              >
+                <img src={sendicon} alt="Send" />
+              </button>
             </div>
-            {/* <img src={copyicon} className="self-center ml-2 cursor-pointer" /> */}
           </div>
         )}
 
@@ -714,7 +742,10 @@ const Main = () => {
                           : 'bg-white text-[#19213D] drop-shadow-sm border-l-4 border-[#19213D] w-fit max-w-screen-sm text-base p-3'
                       }`}
                     >
-                      <div dangerouslySetInnerHTML={renderMessage(msg.text)} />
+                      <div
+                        className="message-content"
+                        dangerouslySetInnerHTML={renderMessage(msg.text)}
+                      />
                     </div>
                   </div>
                 ))}
@@ -725,6 +756,7 @@ const Main = () => {
             {currentAssistantMessage && (
               <div className="rounded-lg bg-white text-[#19213D] drop-shadow-sm border-l-4 border-[#19213D] w-fit max-w-screen-sm text-base p-3">
                 <div
+                  className="message-content"
                   dangerouslySetInnerHTML={renderMessage(
                     currentAssistantMessage
                   )}
@@ -736,7 +768,7 @@ const Main = () => {
           {/* Bottom input field (shows only after user submits a message) */}
           {showInputAtBottom && (
             <div className="flex flex-col mt-4 mb-4">
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2 mb-2">
                 <div className="flex p-4 py-2 text-white bg-[#19213D] rounded-full">
                   • MedAsk
                 </div>
@@ -757,22 +789,22 @@ const Main = () => {
                   onChange={(e) => setUserInput(e.target.value)}
                   onKeyDown={handleKeyPress}
                 />
-                <img
-                  src={sendicon}
+                <button
                   className="absolute right-4 bottom-3 cursor-pointer"
                   onClick={handleSendClick}
-                />
+                >
+                  <img src={sendicon} alt="Send" />
+                </button>
               </div>
-              {/* <img src={copyicon} className="self-center" /> */}
             </div>
           )}
 
           {/* Footer links */}
-          <div className="flex justify-between">
+          <div className="flex flex-wrap justify-between">
             <div className="text-[#313131] text-sm mt-2 cursor-pointer">
-              Disclaimer <span className="text-[#D9D9D9]">|</span> Privacy
+              Disclaimer <span className="text-[#D9D9D9] mx-1">|</span> Privacy
               Policy
-              <span className="text-[#D9D9D9]">|</span> Terms & Conditions
+              <span className="text-[#D9D9D9] mx-1">|</span> Terms & Conditions
             </div>
             <div className="text-[#313131] text-xs mt-4">
               For Pubmed, we are only relying on data from Pubmed and not
@@ -783,9 +815,5 @@ const Main = () => {
       </div>
     </div>
   );
-
-  // Render different layouts based on screen size
-  return isMobile ? <MobileDesign /> : <DesktopDesign />;
 };
-
 export default Main;
