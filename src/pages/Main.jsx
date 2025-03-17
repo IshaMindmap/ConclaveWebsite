@@ -19,7 +19,6 @@ const Main = () => {
   const navigate = useNavigate();
   const [isMobile, setIsMobile] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
   const [userInput, setUserInput] = useState('');
   const [messages, setMessages] = useState([]);
   const [showInputAtBottom, setShowInputAtBottom] = useState(false);
@@ -683,8 +682,6 @@ const Main = () => {
                 id="Input3"
                 placeholder="Ask Me"
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900"
-                value={userInput}
-                onChange={(e) => setUserInput(e.target.value)}
                 onKeyPress={handleKeyPress}
               />
               <img
@@ -753,9 +750,8 @@ const Main = () => {
                   id="Input4"
                   placeholder="Ask Me"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900"
-                  value={userInput}
-                  onChange={(e) => setUserInput(e.target.value)}
-                  onKeyPress={handleKeyPress}
+               
+                  onKeyDown={handleKeyPress}
                 />
                 <img
                   src={sendicon}
@@ -763,7 +759,7 @@ const Main = () => {
                   onClick={handleSendClick}
                 />
               </div>
-              <img src={copyicon} className="self-center" />
+              {/* <img src={copyicon} className="self-center" /> */}
             </div>
           )}
 
