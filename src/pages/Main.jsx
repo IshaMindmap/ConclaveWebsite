@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { marked } from 'marked';
 import DOMPurify from 'dompurify';
-import InputBox from '../components/InputBox';
 import BlueButton from '../components/Buttons';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -14,6 +13,7 @@ import {
 } from '../assets';
 import axios from 'axios';
 import { X, Send, Copy, Upload, FileText, PlusCircle } from 'lucide-react';
+import { InputBox1 } from '../components/InputBox';
 
 const Main = () => {
   const navigate = useNavigate();
@@ -218,6 +218,7 @@ const Main = () => {
   // =======   MESSAGE HANDLING  ========
   const handleSendClick = () => {
     if (userInput.trim()) {
+      
       const newMessage = { text: userInput, isUser: true };
       setMessages([...messages, newMessage]);
 
@@ -466,7 +467,7 @@ const Main = () => {
         {!showInputAtBottom && (
           <div className="flex mb-2">
             <div className="relative w-full">
-              <input
+              <InputBox1
                 type="text"
                 id="Input1"
                 placeholder="Ask Me"
@@ -537,7 +538,7 @@ const Main = () => {
                 </div>
               </div>
               <div className="relative w-full">
-                <input
+                <InputBox1
                   type="text"
                   id="Input2"
                   placeholder="Ask Me"
@@ -677,11 +678,13 @@ const Main = () => {
         {!showInputAtBottom && (
           <div className="flex mb-2">
             <div className="relative p-2 w-full">
-              <input
+              <InputBox1
                 type="text"
                 id="Input3"
                 placeholder="Ask Me"
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900"
+                value={userInput}
+                onChange={(e) => setUserInput(e.target.value)}
                 onKeyPress={handleKeyPress}
               />
               <img
@@ -745,12 +748,13 @@ const Main = () => {
                 </div>
               </div>
               <div className="relative p-2 w-full">
-                <input
+                <InputBox1
                   type="text"
                   id="Input4"
                   placeholder="Ask Me"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900"
-               
+                  value={userInput}
+                  onChange={(e) => setUserInput(e.target.value)}
                   onKeyDown={handleKeyPress}
                 />
                 <img

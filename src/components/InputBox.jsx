@@ -1,6 +1,6 @@
 import React from 'react';
 
-const InputBox = ({
+export const InputBox = ({
   label,
   type = 'text',
   id,
@@ -10,12 +10,10 @@ const InputBox = ({
   onChange,
   required = false,
 }) => {
-  // Ensure id is available for label association
   const inputId = id || name;
 
   return (
     <div className="relative w-full">
-      {/* Input Field */}
       <input
         id={inputId}
         name={name}
@@ -26,7 +24,6 @@ const InputBox = ({
         placeholder={placeholder}
         required={required}
       />
-
       <label
         htmlFor={inputId}
         className="absolute left-2 -top-2 text-[14px] text-[#19213D] bg-white px-1 peer-focus:text-[#424242]"
@@ -37,4 +34,33 @@ const InputBox = ({
   );
 };
 
-export default InputBox;
+export const InputBox1 = ({
+  type = 'text',
+  id,
+  name,
+  value,
+  placeholder,
+  onChange,
+  onKeyPress,
+  required = false,
+}) => {
+  const inputId = id || name;
+
+  return (
+    <input
+      id={inputId}
+      name={name}
+      type={type}
+      value={value}
+      onChange={onChange}
+      onKeyPress={onKeyPress}
+      className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900"
+      placeholder={placeholder}
+      required={required}
+    />
+  );
+};
+
+
+
+export default {InputBox,InputBox1};
