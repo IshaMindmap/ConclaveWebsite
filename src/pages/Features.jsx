@@ -21,7 +21,7 @@ export const Features = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [selected, setSelected] = useState(null);
-  const specialties = ['Cardiology', 'Diabetology', 'Respiratory'];
+  const specialties = ['Cardiology', 'Diabetes', 'Respiratory'];
   const [activetab , setActiveTab] = useState(0)
 
   const handleCategory= (index) =>{

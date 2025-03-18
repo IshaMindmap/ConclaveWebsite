@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import InputBox from '../components/InputBox';
+import {InputBox} from '../components/InputBox';
 import { BlueButton } from '../components/Buttons';
 import { useNavigate } from 'react-router-dom';
 import { centrixsymbol, centrixwhitelogo, robotbg } from '../assets';
@@ -66,18 +66,18 @@ export const Login = () => {
       <div className="text-[#111478] font-bold font-mulish text-xl sm:text-2xl lg:text-3xl mb-4 sm:mb-6 text-center md:text-left">
         Welcome Back
       </div>
-      <InputBox
-        label="MOBILE NO."
-        id="mobile_number"
-        name="mobile_number"
-        placeholder="Enter Mobile No."
-        value={mobileNumber}
-        onChange={handleChange}
-      />
+        <InputBox
+          label="MOBILE NO."
+          id="mobile_number"
+          name="mobile_number"
+          placeholder="Enter Mobile No."
+          value={mobileNumber}
+          onChange={handleChange}
+        />
       <div className="w-full mt-4 md:mt-6">
         {/* Show errors or success messages */}
         {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
-        {success && <p className="text-green-500 text-sm mb-2">{success}</p>}
+        {success && <p className="text-green text-sm mb-2">{success}</p>}
         <div>
           <BlueButton text={'SEND OTP'} onClick={handleSendOTP} />
         </div>
