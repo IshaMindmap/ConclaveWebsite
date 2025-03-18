@@ -41,7 +41,7 @@ export const InputBox1 = ({
   value,
   placeholder,
   onChange,
-  onKeyPress,
+  onKeyDown = () => {},
   required = false,
 }) => {
   const inputId = id || name;
@@ -53,7 +53,10 @@ export const InputBox1 = ({
       type={type}
       value={value}
       onChange={onChange}
-      onKeyPress={onKeyPress}
+      onKeyDown={(e) => {
+        console.log(`Key Pressed: ${e.key}`); 
+        if (onKeyDown) onKeyDown(e); 
+      }}
       className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900"
       placeholder={placeholder}
       required={required}

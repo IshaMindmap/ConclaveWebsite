@@ -296,7 +296,7 @@ const Main = () => {
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault(); 
-      handleSendClick();
+      handleSendClick();  
     }
   };
 
