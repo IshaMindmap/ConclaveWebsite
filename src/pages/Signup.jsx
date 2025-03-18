@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import InputBox from '../components/InputBox';
+import {InputBox} from '../components/InputBox';
 import { BlueButton } from '../components/Buttons';
 import { useNavigate } from 'react-router-dom';
 import { centrixwhitelogo, robotbg } from '../assets';

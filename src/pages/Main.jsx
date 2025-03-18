@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { marked } from 'marked';
 import DOMPurify from 'dompurify';
-import BlueButton from '../components/Buttons';
+import TypingIndicator from "../components/TypingIndicator";
 import { useNavigate } from 'react-router-dom';
 import {
   copyicon,
@@ -29,6 +29,7 @@ const Main = () => {
   const [socket, setSocket] = useState(null);
   const [recentSessions, setRecentSessions] = useState([]);
   const [docscategory, setDocsCategory] = useState('1');
+  const [istyping, setIsTyping] = useState(0);
 
   const accessToken = localStorage.getItem('access_token');
   const category = String(localStorage.getItem('category')).toUpperCase();
@@ -200,8 +201,9 @@ const Main = () => {
 
       try {
         const receivedMessage = JSON.parse(event.data);
-
+        
         if (receivedMessage.status === 'start') {
+          setIsTyping(0)
           currentMessageRef.current = receivedMessage.assistant || '';
           setCurrentAssistantMessage(currentMessageRef.current);
         } else if (receivedMessage.status === 'generating') {
@@ -261,9 +263,10 @@ const Main = () => {
 
     const newMessage = { text: userInput, isUser: true };
     setMessages((prev) => [...prev, newMessage]);
+    setIsTyping(1)
 
     if (socket && socket.readyState === WebSocket.OPEN) {
-
+      
       try {
         socket.send(
           JSON.stringify({
@@ -274,6 +277,7 @@ const Main = () => {
         );
       } catch (error) {
         console.error('Error sending message:', error);
+        setIsTyping(0)
       }
     } else {
       console.error(
@@ -758,9 +762,14 @@ const Main = () => {
                         dangerouslySetInnerHTML={renderMessage(msg.text)}
                       />
                     </div>
+
                   </div>
                 ))}
-              </div>
+
+                <div className="text-[#19213D]  w-fit max-w-screen-sm text-base p-3"/>
+                  {istyping ?<TypingIndicator/>:''}
+                </div>
+            
             )}
 
             {/* Real-time typing effect */}
