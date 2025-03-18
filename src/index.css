@@ -7,6 +7,8 @@
     display: none;
 }
 
+
+
 .hide-scroll-bar{
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
@@ -37,5 +39,15 @@
 
   .chats-list a{
     font-weight: bold;
+  }
+
+  .chats-list li:has(> a.message-link) {
+    padding-bottom: 10px;
+}
+
+  .chats-list .message-link::before {
+    content: " 🔗"; 
+    font-size: 15px;
+    color: #19213D;
   }
 

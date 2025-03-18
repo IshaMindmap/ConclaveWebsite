@@ -18,10 +18,23 @@ import filtericon from './filtericon.svg';
 import viewicon from './viewicon.svg';
 import downloadicon from './downloadicon.svg';
 import deleteicon from './deleteicon.svg';
-
+import userIcon from './userIcon.jpg';
+import robotbg from './robotbg.svg';
+import smallrobotbg from './smallrobotbg.svg';
+import termsrobotbg from './termsrobotbg.svg';
+import text from './text.svg';
+import upload from './upload.svg';
+import newimg from './new.svg';
 
 export {
+  text,
+  upload,
+  newimg,
+  termsrobotbg,
+  smallrobotbg,
+  robotbg,
   viewicon,
+  userIcon,
   downloadicon,
   deleteicon,
   filtericon,
@@ -30,7 +43,7 @@ export {
   calander,
   settingsicon,
   profile,
-    search,
+  search,
   featuresbg,
   centrixsymbol,
   centrixwhitelogo,

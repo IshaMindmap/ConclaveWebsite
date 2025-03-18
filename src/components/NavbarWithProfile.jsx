@@ -1,73 +1,103 @@
-import {React,useEffect,useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import { centrixlogo, profilepic, settings } from '../assets';
 import { useNavigate } from 'react-router-dom';
-import axios from "axios";
-import { CloudSnow } from 'lucide-react';
+import axios from 'axios';
 
 const NavbarWithProfile = () => {
   const [user, setUser] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
   const navigate = useNavigate();
 
+  // Fetch user profile
   useEffect(() => {
-      const fetchUserProfile = async () => {
-        const token = localStorage.getItem("access_token"); // ✅ Get access tokenx
-        if (!token) {
-          navigate("/login"); // Redirect if no token
-          return;
-        }
-  
-        try {
-          const backendUrl = import.meta.env.VITE_API_URL; // Ensure correct API URL
-          const response = await axios.get(`${backendUrl}api/v1/auth/profile/`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-  
-          setUser(response.data); // ✅ Store user data in state
-          localStorage.setItem("user_profile", JSON.stringify(response.data)); // ✅ Save profile to localStorage
-        } catch (err) {
-          console.error("Profile Fetch Error:", err);
-          localStorage.removeItem("access_token"); 
-          localStorage.removeItem("refresh_token"); 
-          localStorage.removeItem("category"); 
-          navigate("/login"); 
-        }
-      };
-  
-      fetchUserProfile();
-    }, [navigate]);
+    const fetchUserProfile = async () => {
+      const token = localStorage.getItem('access_token');
+      if (!token) {
+        // navigate("/login");
+        return;
+      }
 
+      try {
+        const backendUrl = import.meta.env.VITE_API_URL;
+        const response = await axios.get(`${backendUrl}api/v1/auth/profile/`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-    console.log(user?.info)
+        setUser(response.data);
+        localStorage.setItem('user_profile', JSON.stringify(response.data));
+      } catch (err) {
+        console.error('Profile Fetch Error:', err);
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        localStorage.removeItem('category');
+        // navigate("/login");
+      }
+    };
 
+    fetchUserProfile();
+  }, [navigate]);
 
+  // Detect if screen is mobile
+  useEffect(() => {
+    const checkIfMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
 
-  return (
-    <nav className="flex justify-between items-center fill-available  px-[21px] py-[20px] font-segoe">
-      <div className="flex gap-[0.313vw] cursor-pointer">
-        <img src={centrixlogo} />
+    // Initial check
+    checkIfMobile();
+
+    // Add event listener for window resize
+    window.addEventListener('resize', checkIfMobile);
+
+    // Cleanup
+    return () => window.removeEventListener('resize', checkIfMobile);
+  }, []);
+
+  // Mobile design - Only showing profile button
+  const MobileNavbar = () => (
+    <nav className="flex justify-between items-center w-full px-4 py-3 font-segoe">
+      <div className="flex items-center">
+        <img src={centrixlogo} alt="Centrix Logo" className="h-8" />
       </div>
+
       <div className="flex justify-center items-center">
-        <div className="mr-[3.333vw] font-mulish">
-          Hi <b>{user?.info?.name}</b> welcome to medask
-        </div>
-        <div className="border-[0.3px] rounded-[2.083vw] border-[#C6C6C6] bg-[#FFFFFF] p-[0.278vw] flex gap-[0.694vw] font-mulish">
-          <img src={profilepic} alt="profile picture" />
-          <div className="text-[1.111vw] text-center flex items-center">
-            My profile
-          </div>
-        </div>
-        <div className="ml-2 w-[2.778vw] flex justify-center items-center h-[2.778vw] border-[0.3px] rounded-full border-[#C6C6C6] bg-[#FFFFFF] p-[0.278vw] flex gap-[0.694vw] font-mulish">
-          <img
-            src={settings}
-            alt="settings pic"
-            className="w-[1.389vw] h-[1.389vw]"
-          />
+        {/* Only showing profile button on mobile */}
+        <div className="border border-gray-300 rounded-full bg-white py-1 px-3 flex items-center gap-2 font-mulish">
+          <img src={profilepic} alt="profile picture" className="h-7 w-7" />
+          <div className="text-sm flex items-center">My profile</div>
         </div>
       </div>
     </nav>
   );
+
+  // Desktop design
+  const DesktopNavbar = () => (
+    <nav className="flex justify-between items-center w-full px-5 py-4 font-segoe">
+      <div className="flex cursor-pointer">
+        <img src={centrixlogo} alt="Centrix Logo" />
+      </div>
+
+      <div className="flex justify-center items-center">
+        <div className="mr-8 font-mulish">
+          Hi <b>{user?.info?.name || 'User'}</b> welcome to medask
+        </div>
+
+        <div className="border border-gray-300 rounded-full bg-white py-1 px-3 flex items-center gap-2 font-mulish">
+          <img src={profilepic} alt="profile picture" className="h-8 w-8" />
+          <div className="text-base flex items-center">My profile</div>
+        </div>
+
+        <div className="ml-2 w-10 h-10 flex justify-center items-center border rounded-full border-gray-300 bg-white">
+          <img src={settings} alt="settings pic" className="w-5 h-5" />
+        </div>
+      </div>
+    </nav>
+  );
+
+  // Render different layouts based on screen size
+  return isMobile ? <MobileNavbar /> : <DesktopNavbar />;
 };
 
 export default NavbarWithProfile;

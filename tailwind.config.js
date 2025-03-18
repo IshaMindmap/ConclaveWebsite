@@ -22,6 +22,8 @@ export default {
       fontFamily: {
         segoe: ['Segoe UI'],
         mulish: ['Mulish', 'sans-serif'],
+        satoshi: ['Satoshi'],
+        poppins: ['Poppins'],
       },
     },
 
