@@ -740,12 +740,7 @@ const Main = () => {
             {/* Real-time typing effect */}
             {currentAssistantMessage && (
               <div className="rounded-lg bg-white text-[#19213D] drop-shadow-sm border-l-4 border-[#19213D] w-fit max-w-screen-sm text-base p-3">
-                <div
-                  className="message-content"
-                  dangerouslySetInnerHTML={renderMessage(
-                    currentAssistantMessage
-                  )}
-                />
+                <MessageComponent  text={currentAssistantMessage}/>
               </div>
             )}
           </div>
