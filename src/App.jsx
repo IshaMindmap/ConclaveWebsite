@@ -7,8 +7,8 @@ import {
 } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import NavbarWithProfile from './components/NavbarWithProfile';
-import Signup from './pages/signup';
-import Login from './pages/login';
+import Signup from './pages/Signup';
+import Login from './pages/Login';
 import Features from './pages/Features';
 import Main from './pages/Main';
 import Otp from './pages/Otp';
