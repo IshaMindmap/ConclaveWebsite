@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { marked } from 'marked';
-import DOMPurify from 'dompurify';
 import TypingIndicator from "../components/TypingIndicator";
+import MessageComponent from "../components/MessageComponent";
 import { useNavigate } from 'react-router-dom';
 import {
   copyicon,
@@ -35,29 +34,6 @@ const Main = () => {
   const category = String(localStorage.getItem('category')).toUpperCase();
   const backendUrl = import.meta.env.VITE_API_URL;
   const socketUrl = import.meta.env.VITE_API_SOCKET_URL;
-  const renderer = new marked.Renderer();
-
-  // ===== CONVERT MARKDOWN TO HTML =====
-  renderer.link = (href, title, text) => {
-    const safeHref = typeof href === 'object' ? href.href : href;
-    const safeTitle = title ? ` title="${title}"` : '';
-    const safeText = text || safeHref;
-    return `<a href="${safeHref}"${safeTitle} target="_blank" rel="noopener noreferrer">${safeText}</a>`;
-  };
-
-  marked.setOptions({
-    breaks: true,
-    gfm: true,
-    headerIds: true,
-    langPrefix: 'language-',
-    renderer: renderer,
-  });
-
-  const renderMessage = (text) => {
-    if (!text) return { __html: '' };
-    // Use DOMPurify to sanitize HTML before setting it
-    return { __html: DOMPurify.sanitize(marked.parse(text)) };
-  };
 
   const handleSessionClick = (uid) => {
     if (uid === sessionUid) return; // Don't reload if it's the same session
@@ -570,10 +546,7 @@ const Main = () => {
                           : 'bg-white text-[#19213D] drop-shadow-sm border-l-4 border-[#19213D] w-fit max-w-[80%] text-sm p-3'
                       }`}
                     >
-                      <div
-                        className="message-content"
-                        dangerouslySetInnerHTML={renderMessage(msg.text)}
-                      />
+                      <MessageComponent  text={msg.text}/>
                     </div>
                   </div>
                 ))}
@@ -583,12 +556,7 @@ const Main = () => {
             {/* Real-time typing effect */}
             {currentAssistantMessage && (
               <div className="rounded-lg bg-white text-[#19213D] drop-shadow-sm border-l-4 border-[#19213D] w-fit max-w-[80%] text-sm p-3">
-                <div
-                  className="message-content"
-                  dangerouslySetInnerHTML={renderMessage(
-                    currentAssistantMessage
-                  )}
-                />
+                <MessageComponent  text={currentAssistantMessage}/>
               </div>
             )}
           </div>
@@ -757,10 +725,7 @@ const Main = () => {
                           : 'bg-white text-[#19213D] drop-shadow-sm border-l-4 border-[#19213D] w-fit max-w-screen-sm text-base p-3'
                       }`}
                     >
-                      <div
-                        className="message-content"
-                        dangerouslySetInnerHTML={renderMessage(msg.text)}
-                      />
+                      <MessageComponent  text={msg.text}/>
                     </div>
 
                   </div>
