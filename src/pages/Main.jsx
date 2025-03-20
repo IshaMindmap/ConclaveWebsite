@@ -579,10 +579,21 @@ const generatePDF = (messagesByCategory, uid) => {
       y = margin;
     }
 
+    let categoryName;
+    if (category === '1') {
+      categoryName = 'MedAsk';
+    } else if (category === '2') {
+      categoryName = 'Pubmed';
+    } else if (category === '3') {
+      categoryName = 'Open Source';
+    } else {
+      categoryName = category;
+    }
+
     // Add category header with proper wrapping
     doc.setFontSize(14);
     doc.setFont('helvetica', 'bold');
-    const categoryText = `Category: ${category}`;
+    const categoryText = `Category: ${categoryName}`;
     const categoryLines = doc.splitTextToSize(categoryText, contentWidth);
     doc.text(categoryLines, startX, y);
     y += categoryLines.length * 18 + 10;
@@ -680,6 +691,7 @@ const generatePDF = (messagesByCategory, uid) => {
       }
 
       y += 10; // Space between messages
+      // No separator line between messages as requested
     });
 
     y += 15; // Space between categories
