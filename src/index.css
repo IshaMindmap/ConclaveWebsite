@@ -51,3 +51,65 @@
     color: #19213D;
   }
 
+  @font-face {
+    font-family: "Futura";
+    src: url("./assets/fonts/futura\ light\ bt.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+  }
+  
+  body {
+    font-family: "Futura", sans-serif;
+  }
+
+  @keyframes slide-in-right {
+    from {
+      transform: translateX(100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+  
+  @keyframes slide-in-left {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+  
+  @keyframes slide-out-right {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(100%);
+    }
+  }
+  
+  @keyframes slide-out-left {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-100%);
+    }
+  }
+  
+  .animate-slide-in-right {
+    animation: slide-in-right 0.5s forwards;
+  }
+  
+  .animate-slide-in-left {
+    animation: slide-in-left 0.5s forwards;
+  }
+  
+  .animate-slide-out-right {
+    animation: slide-out-right 0.5s forwards;
+  }
+  
+  .animate-slide-out-left {
+    animation: slide-out-left 0.5s forwards;
+  }

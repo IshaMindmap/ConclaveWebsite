@@ -2,57 +2,17 @@ import React from 'react';
 import {
   BrowserRouter as Router,
   Route,
-  Routes,
-  useLocation,
+  Routes
 } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import NavbarWithProfile from './components/NavbarWithProfile';
-import Signup from './pages/Signup';
-import Login from './pages/Login';
-import Features from './pages/Features';
-import Main from './pages/Main';
-import Otp from './pages/Otp';
-import LandingScreen from './pages/LandingScreen';
-import Dashboard from './pages/Dashboard';
-import Terms from './pages/Terms';
+import HomePage from './pages/HomePage';
 
-// Layout component to handle conditional navbar rendering
-const Layout = ({ children }) => {
-  const location = useLocation();
-
-  const isLandingPage =
-    location.pathname === '/' || location.pathname === '/login';
-  const isFeaturesPage =
-    location.pathname === '/features' || location.pathname === '/dashboard' ;
-  const isProfilePage =
-    location.pathname === '/main';
-
-  return (
-    <>
-      {/* Show navbar on all pages except the landing and features pages */}
-      {!isLandingPage &&
-        !isFeaturesPage &&
-        (isProfilePage ? <NavbarWithProfile /> :'')}
-      {children}
-    </>
-  );
-};
 
 function App() {
   return (
     <Router>
-      <Layout>
         <Routes>
-          <Route path="/" element={<LandingScreen />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/features" element={<Features />} />
-          <Route path="/main" element={<Main />} />
-          <Route path="/terms" element={<Terms />} />
-          <Route path="/otp" element={<Otp />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/" element={<HomePage />} />
         </Routes>
-      </Layout>
     </Router>
   );
 }
