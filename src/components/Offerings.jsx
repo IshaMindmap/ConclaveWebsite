@@ -129,7 +129,7 @@ const Offerings = () => {
         </div>
         <div className='w-1/2 pt-[6.955vw]'>
           <div className='text-[#FF7A01] text-[1.318vw] mb-2'>WE OFFERED</div>
-          <div className='text-[#0A0A0A] text-[3.66vw] mb-2'>Platform Offerings</div>
+          <div className='text-[#0A0A0A] text-[3.66vw] mb-2'>Platform Offering</div>
           <div className='text-[#8A8A8A] text-[1.464vw]'>
             At Conclave Research, we provide a suite of innovative platforms designed to streamline your market research process and enhance your insights. Explore our products and transform the way you conduct market research!
           </div>
