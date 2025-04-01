@@ -17,7 +17,7 @@ const Offerings = () => {
       
       if (cardsContainerRef.current) {
         const cardWidth = cardsContainerRef.current.children[0].offsetWidth;
-        const cardGap = 16; 
+        const cardGap = window.innerWidth < 640 ? 16 : 24; // Gap in pixels
         const newScrollPosition = Math.max(0, (cardWidth + cardGap) * nextSlide - cardWidth);
         
         cardsContainerRef.current.scrollTo({
@@ -35,7 +35,7 @@ const Offerings = () => {
     
     if (cardsContainerRef.current) {
       const cardWidth = cardsContainerRef.current.children[0].offsetWidth;
-      const cardGap = 16; 
+      const cardGap = window.innerWidth < 640 ? 16 : 24; // Gap in pixels
       const newScrollPosition = Math.max(0, (cardWidth + cardGap) * index - cardWidth);
       
       cardsContainerRef.current.scrollTo({
@@ -122,21 +122,27 @@ const Offerings = () => {
   const activeCardData = activeTab === 'diy' ? diyCardData : apiCardData;
 
   return (
-    <div className='flex flex-col bg-[#F6F6F6] relative'>
-      <div className='flex w-full'>
-        <div className='w-1/2'>
-          <img src={offeringimage} alt="Market research" />
+    <div className='flex flex-col bg-[#F6F6F6] relative md:min-h-0'>
+      {/* Main content section */}
+      <div className='flex flex-col md:flex-row w-full'>
+        {/* Image container - full width on mobile, half on larger screens */}
+        <div className='w-full hidden md:flex md:w-1/2 h-fit'>
+          <img src={offeringimage} alt="Market research" className=" h-[85%] min-h-[928px]" />
         </div>
-        <div className='w-1/2 pt-[6.955vw]'>
-          <div className='text-[#FF7A01] text-[1.318vw] mb-2'>WE OFFERED</div>
-          <div className='text-[#0A0A0A] text-[3.66vw] mb-2'>Platform Offerings</div>
-          <div className='text-[#8A8A8A] text-[1.464vw]'>
+        
+        {/* Text content - full width on mobile, half on larger screens */}
+        <div className='w-full md:w-1/2 p-4 sm:p-6 md:pt-12 lg:pt-20'>
+          <div className='text-[#FF7A01] text-sm sm:text-base md:text-lg lg:text-xl mb-1 sm:mb-2'>WE OFFERED</div>
+          <div className='text-[#0A0A0A] text-xl sm:text-2xl md:text-3xl lg:text-5xl mb-2'>Platform Offerings</div>
+          <div className='text-[#8A8A8A] text-xs sm:text-sm md:text-base lg:text-xl'>
             At Conclave Research, we provide a suite of innovative platforms designed to streamline your market research process and enhance your insights. Explore our products and transform the way you conduct market research!
           </div>
-          <div className="mt-8 flex p-2">
+          
+          {/* Tab controls */}
+          <div className="mt-3 sm:mt-4 md:mt-8 flex flex-col sm:flex-row p-2">
             <div 
               onClick={() => handleTabChange('diy')}
-              className={`cursor-pointer text-center px-4 py-2 text-sm font-medium max-w-[15vw] transition-colors ${
+              className={`cursor-pointer min-w-[160px] text-center px-2 md:px-4 py-2 text-xs md:text-sm font-medium mb-2 sm:mb-0 max-w-full sm:max-w-[200px] md:max-w-[250px] transition-colors ${
                 activeTab === 'diy' 
                   ? 'bg-black text-white' 
                   : 'bg-white text-gray-700 border border-gray-300'
@@ -147,10 +153,10 @@ const Offerings = () => {
             </div>
             <div 
               onClick={() => handleTabChange('api')}
-              className={`cursor-pointer flex justify-center items-center relative px-16 py-2 text-sm font-medium transition-colors ${
+              className={`cursor-pointer flex justify-center items-center relative sm:px-12 md:px-12 py-2 text-xs md:text-sm font-medium transition-colors ${
                 activeTab === 'api' 
                   ? 'bg-black text-white' 
-                  : 'bg-white text-gray-700 border-t border-r border-b border-gray-300'
+                  : 'bg-white text-gray-700 border border-gray-300 sm:border-t sm:border-r sm:border-b sm:border-l-0'
               }`}
             >
               API Integration
@@ -159,44 +165,50 @@ const Offerings = () => {
         </div>
       </div>
       
-      <div 
-        ref={cardsContainerRef}
-        className='absolute bottom-[20vh] flex fill-available overflow-x-auto gap-4 px-4 ml-[2vw]'
-        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-      >
-        {activeCardData.map((card, index) => (
-          <div 
-            key={index}
-            className="w-[calc(20%-16px)] flex-shrink-0 py-8 px-4 transform transition-transform duration-300 flex flex-col rounded-md shadow-md"
-            style={{ 
-              background: currentSlide === index ? "linear-gradient(151deg, rgba(254, 204, 13, 0.7) 0%, rgba(228, 159, 0, 0.7) 100%)" : "white",
-            }}
-          >
-            <div className="flex justify-left items-center mb-4">
-              <div className={`p-4 ${currentSlide === index ? 'bg-white' : 'bg-gray-100'} rounded-full `}>
-                <img src={offeringcard1} alt={`${card.title} icon`} className="w-8 h-8 self-left"/>
+      {/* Cards section with positioning and container */}
+      <div className="relative w-full mt-6 md:mt-0">
+        {/* Cards container - scrollable horizontally */}
+        <div 
+          ref={cardsContainerRef}
+          className='relative md:absolute md:bottom-[12rem] left-0 right-0 flex overflow-x-auto gap-4 md:gap-6 px-4 md:px-6 mx-auto'
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        >
+          {activeCardData.map((card, index) => (
+            <div 
+              key={index}
+              className="max-w-[12rem] sm:max-w-[14rem] md:max-w-[14rem] lg:max-w-[14rem] xl:max-w-[16rem] flex-shrink-0 py-6 sm:py-7 md:py-8 px-5 md:px-6 transform transition-transform duration-300 flex flex-col rounded-md shadow-md"
+              style={{ 
+                background: currentSlide === index ? "linear-gradient(151deg, rgba(254, 204, 13, 0.7) 0%, rgba(228, 159, 0, 0.7) 100%)" : "white",
+
+              }}
+            >
+              <div className="flex justify-left items-center mb-3 sm:mb-4">
+                <div className={`p-2 sm:p-3 md:p-4 ${currentSlide === index ? 'bg-white' : 'bg-gray-100'} rounded-full `}>
+                  <img src={offeringcard1} alt={`${card.title} icon`} className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 self-left"/>
+                </div>
               </div>
+              
+              <h3 className="font-semibold text-sm sm:text-base md:text-lg lg:text-xl mb-1 sm:mb-2 text-[#0A0A0A]">{card.title}</h3>
+              
+              <p className={`text-xs sm:text-sm md:text-base font-normal ${currentSlide === index ? 'text-[#0A0A0A]' : 'text-[#8A8A8A]'}`}>
+                {card.description}
+              </p>
             </div>
-            
-            <h3 className="font-[600] text-[1.364vw] mb-2 text-[#0A0A0A]">{card.title}</h3>
-            
-            <p className={`text-[1.118vw] font-normal ${currentSlide === index ? 'text-[#0A0A0A]' : 'text-[#8A8A8A]'}`}>
-              {card.description}
-            </p>
-          </div>
-        ))}
-      </div>
-      
-      <div className="flex absolute bottom-[0] right-[40vw] justify-center gap-2 z-20 my-4 pb-4">
-        {[...Array(totalSlides)].map((_, index) => (
-          <div
-            key={index}
-            onClick={() => goToSlide(index)}
-            className={`rounded-full w-3 h-3 cursor-pointer ${
-              currentSlide === index ? 'bg-[#FF7A01]' : 'bg-[#E0E0E0]'
-            }`}
-          ></div>
-        ))}
+          ))}
+        </div>
+        
+        {/* Pagination dots */}
+        <div className="flex bottom-[-2.5rem] left-[40%] absolute md:bottom-[4rem] md:left-[51%] right-0 gap-1.5 sm:gap-2 z-20 my-4">
+          {[...Array(totalSlides)].map((_, index) => (
+            <div
+              key={index}
+              onClick={() => goToSlide(index)}
+              className={`rounded-full w-1.5 h-1.5 sm:w-2 sm:h-2 md:w-3 md:h-3 cursor-pointer ${
+                currentSlide === index ? 'bg-[#FF7A01]' : 'bg-[#E0E0E0]'
+              }`}
+            ></div>
+          ))}
+        </div>
       </div>
     </div>
   );

@@ -100,9 +100,9 @@ export const HeroSection = () => {
   const renderContent = (item) => (
     <>
       {/* Navigation Menu */}
-      <div className="flex justify-between z-10 px-4 md:px-[5.71vw] pt-4 md:pt-[1.635vw]">
-        <div className=""><img src={logowhite} className='w-[150px] h-auto md:w-[19.985vw] md:h-[4.978vw]'/></div>
-        <div className="hidden md:flex justify-center items-center text-white text-[1.025vw] gap-[2.562vw]">
+     <div className="flex justify-between z-10 px-4 md:px-10 lg:px-20 pt-4 md:pt-6 lg:pt-8">
+        <div className=""><img src={logowhite} className='w-[150px] h-auto md:w-40 lg:w-56'/></div>
+        <div className="hidden md:flex justify-center items-center text-white text-sm lg:text-base gap-5 lg:gap-10">
           <div className="cursor-pointer hover:text-[#FECC0D] transition-colors" onClick={()=>{navigate('/aboutus')}}>ABOUT US</div>
           <div className="cursor-pointer hover:text-[#FECC0D] transition-colors" onClick={()=>{navigate('/solutions')}}>SOLUTIONS</div>
           <div className="cursor-pointer hover:text-[#FECC0D] transition-colors" onClick={()=>{navigate('/resources')}}>RESOURCES</div>
@@ -116,13 +116,13 @@ export const HeroSection = () => {
         </div>
       </div>
 
-      <div className="text-base md:text-[2.343vw] text-white text-center mt-28 md:mt-[270px] font-medium flex-grow flex flex-col justify-center px-4 md:px-0">
+      <div className="text-base md:text-4xl text-white text-center mt-28 md:mt-64 font-medium flex-grow gap-4 flex flex-col justify-center px-4 md:px-0">
         <div>{item.title}</div>
-        <div className="w-full flex flex-col justify-center items-center">
-          <div className="max-w-full md:max-w-[60.884vw] text-3xl md:text-[5.49vw] font-bold leading-tight">
+        <div className="w-full flex gap-4 flex-col justify-center items-center">
+          <div className="max-w-full md:max-w-4xl text-3xl md:text-7xl font-bold leading-tight">
             {item.mainTitle}
           </div>
-          <div className="w-auto px-6 py-2 md:w-[17.204vw] mt-4 md:h-[3.148vw] bg-[#FECC0D] text-[#0A0A0A] text-sm md:text-[1.318vw] font-normal flex justify-center items-center cursor-pointer hover:bg-[#E4A100] transition-colors">
+          <div className="w-auto px-6 py-2 md:w-64 mt-4 md:h-12 bg-[#FECC0D] text-[#0A0A0A] text-sm md:text-xl font-normal flex justify-center items-center cursor-pointer hover:bg-[#E4A100] transition-colors">
             {item.buttonText}
           </div>
         </div>
@@ -131,7 +131,7 @@ export const HeroSection = () => {
   );
 
   return (
-    <div className="relative w-full h-[500px] md:h-[56.149vw] overflow-hidden">
+    <div className="relative w-full h-[500px] md:h-[45rem] overflow-hidden">
       <style jsx global>{`
         @keyframes slideInRight {
           from { transform: translateX(100%); }
@@ -184,7 +184,7 @@ export const HeroSection = () => {
 
       <div
         style={{
-          backgroundImage: `url(${nextCarouselItem.bgShadow}), url(${nextCarouselItem.bg})`,
+          backgroundImage: `url(${currentCarouselItem.bgShadow}), url(${currentCarouselItem.bg})`,
           backgroundSize: "cover, cover",
           backgroundPosition: "center, center",
           backgroundRepeat: "no-repeat, no-repeat",
@@ -194,7 +194,7 @@ export const HeroSection = () => {
         {renderContent(nextCarouselItem)}
       </div>
 
-      <div className="absolute bottom-6 md:bottom-16 left-0 right-0 flex justify-center gap-2 z-20">
+      <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2 z-20">
         {carouselData.map((_, index) => (
           <div
             key={index}
